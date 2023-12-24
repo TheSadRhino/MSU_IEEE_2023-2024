@@ -453,7 +453,7 @@ class Roboclaw:
         self._writeSingleByte(commandType.value)
 
     def _writeSingleByte(self, bit: int) -> None:
-        self.__port.write(chr(bit & 0xFF))
+        self.__port.write(chr(bit & 0xFF).encode())
 
     def _writeData(self, data: [int]) -> None:
         for bit in data:
