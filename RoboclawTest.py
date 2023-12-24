@@ -8,23 +8,23 @@ addressFront = 0x81
 roboclawMultiplexer = Roboclaw("/dev/ttyS0", 115200)
 
 if roboclawMultiplexer.open():
-    roboclawMultiplexer.driveM1Forward(addressFront, 127)
+    print(roboclawMultiplexer.driveM1Forward(addressFront, 64))
 
     time.sleep(1)
 
-    roboclawMultiplexer.driveM2Forward(addressFront, 127)
+    print(roboclawMultiplexer.driveM2Forward(addressFront, 64))
 
     time.sleep(1)
 
-    roboclawMultiplexer.driveM1Forward(addressBack, 127)
+    print(roboclawMultiplexer.driveM1Forward(addressBack, 64))
 
     time.sleep(1)
 
-    roboclawMultiplexer.driveM2Forward(addressBack, 127)
+    print(roboclawMultiplexer.driveM2Forward(addressBack, 64))
 
     time.sleep(1)
 
-    roboclawMultiplexer.driveForwardMixedMode(addressFront, 0)
-    roboclawMultiplexer.driveForwardMixedMode(addressBack, 0)
+    print(roboclawMultiplexer.driveForwardMixedMode(addressFront, 0))
+    print(roboclawMultiplexer.driveForwardMixedMode(addressBack, 0))
 else:
     print("Couldn't open the serial bus.")
