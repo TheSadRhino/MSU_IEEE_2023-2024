@@ -42,7 +42,7 @@ def _bytesTo32BitValue(byteValues: [int, int, int, int]) -> int:
 def _serialToBytes(serialValues: [str]) -> [int]:
     byteValues = [0]*len(serialValues)
     for i in range(0, len(serialValues)):
-        byteValues[i] = ord(serialValues[i])
+        byteValues[i] = ord(serialValues[i].decode())
 
     return byteValues
 
@@ -395,7 +395,7 @@ class Roboclaw:
         self.__crc16 = 0
 
     def _updateCRC16SingleByte(self, byte: int) -> None:
-        self.__crc16 = self.__crc16 ^ (byte << 8)
+        self.__crc16 = self.__crc16 ^ ((byte & 0xFF) << 8)
         for bit in range(0, 8):
             if bool(self.__crc16 & 0x8000):
                 self.__crc16 = (self.__crc16 << 1) ^ 0x1021
@@ -452,8 +452,8 @@ class Roboclaw:
         self._updateCRC16SingleByte(commandType.value)
         self._writeSingleByte(commandType.value)
 
-    def _writeSingleByte(self, bit: int) -> None:
-        self.__port.write(chr(bit & 0xFF).encode())
+    def _writeSingleByte(self, byte: int) -> None:
+        self.__port.write(chr(byte & 0xFF).encode())
 
     def _writeData(self, data: [int]) -> None:
         for bit in data:
