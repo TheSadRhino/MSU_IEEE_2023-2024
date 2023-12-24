@@ -410,7 +410,7 @@ class Roboclaw:
         byteValues = _bytesToSerial(_16BitValueToBytes(self.__crc16 & 0xFFFF))
 
         for byteValue in byteValues:
-            self.__port.write(byteValue)
+            self.__port.write(byteValue.encode())
 
         return self._isAcknowledged()
 
@@ -418,7 +418,7 @@ class Roboclaw:
         byteValues = _bytesToSerial(_16BitValueToBytes(self.__crc16 & 0xFFFF))
 
         for byteValue in byteValues:
-            self.__port.write(byteValue)
+            self.__port.write(byteValue.encode())
 
         data = _serialToBytes(self.__port.read(dataLength))
 
