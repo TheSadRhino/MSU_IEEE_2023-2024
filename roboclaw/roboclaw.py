@@ -40,7 +40,7 @@ def _bytesTo32BitValue(byteValues: [int, int, int, int]) -> int:
 
 
 def _serialToBytes(serialValues: [str]) -> [int]:
-    byteValues = [len(serialValues)]
+    byteValues = []*len(serialValues)
     for i in range(0, len(serialValues)):
         byteValues[i] = ord(serialValues[i])
 
@@ -48,7 +48,7 @@ def _serialToBytes(serialValues: [str]) -> [int]:
 
 
 def _bytesToSerial(byteValues: [int]) -> [str]:
-    serialValues = [len(byteValues)]
+    serialValues = []*len(byteValues)
     for i in range(0, len(byteValues)):
         serialValues[i] = chr(byteValues[i])
 
