@@ -6,53 +6,37 @@ from serial import SerialException
 
 
 # Utilities for bit operations
-def _32BitValueToBytes(longValue: int) -> [int, int, int, int]:
+def _32BitValueToBytes(longValue: int) -> [bytes, bytes, bytes, bytes]:
     byte0 = longValue
     byte1 = longValue >> 8
     byte2 = longValue >> 16
     byte3 = longValue >> 24
 
-    return byte3, byte2, byte1, byte0
+    return bytes(byte3 & 0xFF), bytes(byte2 & 0xFF), bytes(byte1 & 0xFF), bytes(byte0 & 0xFF)
 
 
-def _16BitValueToBytes(wordValue: int) -> [int, int]:
+def _16BitValueToBytes(wordValue: int) -> [bytes, bytes]:
     byte0 = wordValue
     byte1 = wordValue >> 8
-    return byte1, byte0
+    return bytes(byte1 & 0xFF), bytes(byte0 & 0xFF)
 
 
-def _boolToBytes(value: bool) -> [int]:
-    return 1 if value else 0,
+def _boolToBytes(value: bool) -> [bytes]:
+    return bytes(1) if value else bytes(0),
 
 
-def _bytesTo16BitValue(byteValues: [int, int]) -> int:
+def _bytesTo16BitValue(byteValues: [bytes, bytes]) -> int:
     if len(byteValues) != 2:
         return -1
     else:
         return byteValues[1] << 8 | byteValues[0]
 
 
-def _bytesTo32BitValue(byteValues: [int, int, int, int]) -> int:
+def _bytesTo32BitValue(byteValues: [bytes, bytes, bytes, bytes]) -> int:
     if len(byteValues) != 4:
         return -1
     else:
         return byteValues[3] << 24 | byteValues[2] << 16 | byteValues[1] << 8 | byteValues[0]
-
-
-def _serialToBytes(serialValues: [str]) -> [int]:
-    byteValues = [0]*len(serialValues)
-    for i in range(0, len(serialValues)):
-        byteValues[i] = ord(serialValues[i].decode())
-
-    return byteValues
-
-
-def _bytesToSerial(byteValues: [int]) -> [str]:
-    serialValues = [""]*len(byteValues)
-    for i in range(0, len(byteValues)):
-        serialValues[i] = chr(byteValues[i])
-
-    return serialValues
 
 
 class Roboclaw:
@@ -394,33 +378,31 @@ class Roboclaw:
     def _clearCRC16(self) -> None:
         self.__crc16 = 0
 
-    def _updateCRC16SingleByte(self, byte: int) -> None:
-        self.__crc16 = self.__crc16 ^ ((byte & 0xFF) << 8)
+    def _updateCRC16SingleByte(self, byte: bytes) -> None:
+        self.__crc16 = self.__crc16 ^ ((int(byte) & 0xFF) << 8)
         for bit in range(0, 8):
             if bool(self.__crc16 & 0x8000):
                 self.__crc16 = (self.__crc16 << 1) ^ 0x1021
             else:
                 self.__crc16 = self.__crc16 << 1
 
-    def _updateCRC16(self, byteArray: [int]) -> None:
-        for byte in range(0, len(byteArray)):
+    def _updateCRC16(self, byteArray: [bytes]) -> None:
+        for byte in byteArray:
             self._updateCRC16SingleByte(byte)
 
     def _writeCRC16WriteOnly(self) -> bool:
-        byteValues = _bytesToSerial(_16BitValueToBytes(self.__crc16 & 0xFFFF))
+        byteValues = _16BitValueToBytes(self.__crc16 & 0xFFFF)
 
-        for byteValue in byteValues:
-            self.__port.write(byteValue.encode())
+        self.__port.write(byteValues)
 
         return self._isAcknowledged()
 
-    def _writeCRC16AndReadData(self, dataLength: int) -> [bool, [int]]:
-        byteValues = _bytesToSerial(_16BitValueToBytes(self.__crc16 & 0xFFFF))
+    def _writeCRC16AndReadData(self, dataLength: int) -> [bool, [bytes]]:
+        byteValues = _16BitValueToBytes(self.__crc16 & 0xFFFF)
 
-        for byteValue in byteValues:
-            self.__port.write(byteValue.encode())
+        self.__port.write(byteValues)
 
-        data = _serialToBytes(self.__port.read(dataLength))
+        data = self.__port.read(dataLength)
 
         crcValid, crc16 = self._readCRC16()
         if crcValid:
@@ -431,7 +413,7 @@ class Roboclaw:
 
     def _readCRC16(self) -> [bool, int]:
         data = self.__port.read(2)
-        crc16 = _bytesTo16BitValue(_serialToBytes(data))
+        crc16 = _bytesTo16BitValue(data)
 
         if crc16 != -1:
             return True, crc16
@@ -440,26 +422,26 @@ class Roboclaw:
     # Ensures packets sent are acknowledged (0xFF sent from device).
     # This allows for retries in the case of bad data sent or received.
     def _isAcknowledged(self) -> bool:
-        data = _serialToBytes(self.__port.read(1))
+        data = self.__port.read(1)
 
         if len(data) > 0:
             return bool(data[0] & 0xFF)
         return False
 
     def _writeAddressAndCommand(self, address: int, commandType: Command) -> None:
-        self._updateCRC16SingleByte(address)
-        self._writeSingleByte(address)
-        self._updateCRC16SingleByte(commandType.value)
-        self._writeSingleByte(commandType.value)
+        self._updateCRC16SingleByte(bytes(address))
+        self._writeSingleByte(bytes(address))
+        self._updateCRC16SingleByte(bytes(commandType.value))
+        self._writeSingleByte(bytes(commandType.value))
 
-    def _writeSingleByte(self, byte: int) -> None:
-        self.__port.write(chr(byte & 0xFF).encode())
+    def _writeSingleByte(self, byte: bytes) -> None:
+        self.__port.write(byte)
 
-    def _writeData(self, data: [int]) -> None:
+    def _writeData(self, data: [bytes]) -> None:
         for bit in data:
             self._writeSingleByte(bit)
 
-    def _sendSetCommand(self, address: int, commandType: Command, data: [int]) -> bool:
+    def _sendSetCommand(self, address: int, commandType: Command, data: [bytes]) -> bool:
         for _ in range(0, self.__maxRetries):
             self.__port.flushInput()
 
@@ -491,40 +473,40 @@ class Roboclaw:
 
     # Publicly accessible motion commands
     def driveM1Forward(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M1_FORWARD, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_M1_FORWARD, [bytes(value & 0xFF)])
 
     def driveM1Backward(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M1_BACKWARD, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_M1_BACKWARD, [bytes(value & 0xFF)])
 
     def driveM2Forward(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M2_FORWARD, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_M2_FORWARD, [bytes(value & 0xFF)])
 
     def driveM2Backward(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M2_BACKWARD, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_M2_BACKWARD, [bytes(value & 0xFF)])
 
     def driveM17Bit(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M1_7BIT, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_M1_7BIT, [bytes(value & 0xFF)])
 
     def driveM27Bit(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M2_7BIT, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_M2_7BIT, [bytes(value & 0xFF)])
 
     def driveForwardMixedMode(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_FORWARD_MIXED_MODE, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_FORWARD_MIXED_MODE, [bytes(value & 0xFF)])
 
     def driveBackwardMixedMode(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_BACKWARD_MIXED_MODE, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_BACKWARD_MIXED_MODE, [bytes(value & 0xFF)])
 
     def turnRightMixed(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.TURN_RIGHT_MIXED_MODE, [value])
+        return self._sendSetCommand(address, self.Command.TURN_RIGHT_MIXED_MODE, [bytes(value & 0xFF)])
 
     def turnLeftMixed(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.TURN_LEFT_MIXED_MODE, [value])
+        return self._sendSetCommand(address, self.Command.TURN_LEFT_MIXED_MODE, [bytes(value & 0xFF)])
 
     def driveMixedMode7Bit(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_MIXED_MODE_7BIT, [value])
+        return self._sendSetCommand(address, self.Command.DRIVE_MIXED_MODE_7BIT, [bytes(value & 0xFF)])
 
     def turnMixedMode7Bit(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.TURN_MIXED_MODE_7BIT, [value])
+        return self._sendSetCommand(address, self.Command.TURN_MIXED_MODE_7BIT, [bytes(value & 0xFF)])
 
     def driveM1DutyCycle(self, address: int, duty: int) -> bool:
         byteValues = _16BitValueToBytes(duty)

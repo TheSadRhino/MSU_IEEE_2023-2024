@@ -5,7 +5,7 @@ from roboclaw import Roboclaw
 addressBack = 0x80
 addressFront = 0x81
 
-roboclawMultiplexer = Roboclaw("/dev/serial0", 38400)
+roboclawMultiplexer = Roboclaw("/dev/serial0", 112500)
 
 if roboclawMultiplexer.open():
     print(roboclawMultiplexer.driveM1Forward(addressFront, 64))
