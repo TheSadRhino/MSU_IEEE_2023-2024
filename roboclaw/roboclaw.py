@@ -393,14 +393,16 @@ class Roboclaw:
     def _writeCRC16WriteOnly(self) -> bool:
         byteValues = _16BitValueToBytes(self.__crc16 & 0xFFFF)
 
-        self.__port.write(byteValues)
+        for byte in byteValues:
+            self.__port.write(byte)
 
         return self._isAcknowledged()
 
     def _writeCRC16AndReadData(self, dataLength: int) -> [bool, [bytes]]:
         byteValues = _16BitValueToBytes(self.__crc16 & 0xFFFF)
 
-        self.__port.write(byteValues)
+        for byte in byteValues:
+            self.__port.write(byte)
 
         data = self.__port.read(dataLength)
 
