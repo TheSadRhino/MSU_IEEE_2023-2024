@@ -10,9 +10,22 @@ addressFront = 0x81
 serialDevice = serial.Serial(port="/dev/serial0", baudrate=115200)
 rc = roboclaw.bytebuffer.Roboclaw(serialDevice)
 
-rc.forward_m1(127)
-time.sleep(1)
+rc.forward_m1(64)
+time.sleep(3)
 rc.forward_m1(0)
+
+rc.forward_m2(64)
+time.sleep(3)
+rc.forward_m2(0)
+
+rc.forward_m1(64, addressFront)
+time.sleep(3)
+rc.forward_m1(0, addressFront)
+
+rc.forward_m2(64, addressFront)
+time.sleep(3)
+rc.forward_m2(0, addressFront)
+
 
 
 # #roboclawMultiplexer = Roboclaw("/dev/serial0", 115200)
