@@ -1,2 +1,5 @@
 Hostname: IEEE.local
 MSU: Rocket_2024
+
+Log on by typing  ssh MSU@IEEE.local , then putting in the password when prompted
+After logging on, cd MSU_IEEE_2023-2024 , then source ieeevenv/bin/activate

@@ -344,7 +344,6 @@ class Roboclaw:
             self.__rcAnalogSettings = rcAnalogSettings
             self.__utilitySettings = utilitySettings
 
-
     class CTRLModes(Enum):
         DISABLE = 0
         USER = 1
