@@ -34,7 +34,7 @@ bno = BNO08X_I2C(i2c)
 bno.enable_feature(BNO_REPORT_ROTATION_VECTOR)
 
 while True:
-    time.sleep(0.05)
+    time.sleep(0.2)
     print("Rotation Vector Quaternion:", end="")
     try:
         quatI, quatJ, quatK, quatReal = bno.quaternion  # pylint:disable=no-member
