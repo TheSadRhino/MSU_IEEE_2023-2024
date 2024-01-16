@@ -40,10 +40,12 @@ while leftMouse is None:
 rightMouse = devices[0]
 
 while True:
-    print("Right Mouse Events:")
-    for rightEvent in rightMouse.read():
+    rightEvent = rightMouse.read_one()
+    if rightEvent is not None:
+        print("Right Mouse Event: ", end="")
         print_event(rightEvent)
 
-    print("Left Mouse Events:")
-    for leftEvent in leftMouse.read():
+    leftEvent = leftMouse.read_one()
+    if leftEvent is not None:
+        print("Left Mouse Event: ", end="")
         print_event(leftEvent)
