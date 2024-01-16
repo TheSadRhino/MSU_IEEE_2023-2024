@@ -379,8 +379,8 @@ class Roboclaw:
     def _clearCRC16(self) -> None:
         self.__crc16 = 0
 
-    def _updateCRC16SingleByte(self, byte: bytes) -> None:
-        self.__crc16 = self.__crc16 ^ ((int.from_bytes(byte, "big") & 0xFF) << 8)
+    def _updateCRC16SingleByte(self, byte) -> None:
+        self.__crc16 = self.__crc16 ^ (byte & 0xFF) << 8
         for bit in range(0, 8):
             if bool(self.__crc16 & 0x8000):
                 self.__crc16 = (self.__crc16 << 1) ^ 0x1021
