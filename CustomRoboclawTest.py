@@ -1,6 +1,6 @@
 import time
 
-import roboclaw.roboclaw
+import roboclaw
 
 addressBack = 0x80
 addressFront = 0x81
