@@ -15,6 +15,7 @@ def _recv(buf):
         return buf[:-2]
     return False
 
+
 class Roboclaw:
     """A driver class for the RoboClaw Motor Controller device.
 

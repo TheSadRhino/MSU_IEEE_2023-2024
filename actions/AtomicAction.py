@@ -1,4 +1,5 @@
 import Action
+from subsystems.Robot import Robot
 
 
 class AtomicAction(Action):
@@ -19,6 +20,6 @@ class AtomicAction(Action):
         for action in self.__actions:
             action.update()
 
-    def onStart(self):
+    def onStart(self, robot: Robot = None):
         for action in self.__actions:
-            action.onStart()
+            action.onStart(robot)

@@ -2,6 +2,7 @@ import time
 from math import pow
 
 import Action
+from subsystems.Robot import Robot
 
 
 class WaitAction(Action):
@@ -18,5 +19,5 @@ class WaitAction(Action):
     def onTermination(self):
         pass
 
-    def onStart(self):
+    def onStart(self, robot: Robot = None):
         self.__startTime = time.time_ns()

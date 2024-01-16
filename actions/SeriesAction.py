@@ -1,10 +1,12 @@
 import Action
+from subsystems.Robot import Robot
 
 
 class SeriesAction(Action):
     def __init__(self, actions: [Action]):
         self.__actions = actions
         self.__currentAction = None
+        self.__robot = None
 
     def isFinished(self):
         return self.__currentAction is None and len(self.__actions) == 0
@@ -18,7 +20,7 @@ class SeriesAction(Action):
                 return
 
             self.__currentAction = self.__actions.pop(0)
-            self.__currentAction.onStart()
+            self.__currentAction.onStart(self.__robot)
 
         self.__currentAction.update()
 
@@ -26,5 +28,5 @@ class SeriesAction(Action):
             self.__currentAction.onTermination()
             self.__currentAction = None
 
-    def onStart(self):
-        pass
+    def onStart(self, robot: Robot = None):
+        self.__robot = robot

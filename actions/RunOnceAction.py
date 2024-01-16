@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 import Action
+from subsystems.Robot import Robot
 
 
 class RunOnceAction(ABC, Action):
@@ -13,9 +14,9 @@ class RunOnceAction(ABC, Action):
     def onTermination(self):
         pass
 
-    def onStart(self):
-        self.runOnce()
+    def onStart(self, robot: Robot = None):
+        self.runOnce(robot)
 
     @abstractmethod
-    def runOnce(self):
+    def runOnce(self, robot: Robot = None):
         pass

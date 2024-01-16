@@ -1,24 +1,25 @@
 import time
 from enum import Enum
+from struct import pack, unpack
 
 import serial
 from serial import SerialException
 
 
 # Utilities for bit operations
-def _32BitValueToBytes(longValue: int) -> [bytes, bytes, bytes, bytes]:
+def _32BitValueToBytes(longValue: int) -> bytes:
     byte0 = longValue
     byte1 = longValue >> 8
     byte2 = longValue >> 16
     byte3 = longValue >> 24
 
-    return bytes(byte3 & 0xFF), bytes(byte2 & 0xFF), bytes(byte1 & 0xFF), bytes(byte0 & 0xFF)
+    return bytes([byte3 & 0xFF, byte2 & 0xFF, byte1 & 0xFF, byte0 & 0xFF])
 
 
-def _16BitValueToBytes(wordValue: int) -> [bytes, bytes]:
+def _16BitValueToBytes(wordValue: int) -> bytes:
     byte0 = wordValue
     byte1 = wordValue >> 8
-    return bytes(byte1 & 0xFF), bytes(byte0 & 0xFF)
+    return bytes([byte1 & 0xFF, byte0 & 0xFF])
 
 
 def _boolToBytes(value: bool) -> [bytes]:
@@ -40,7 +41,8 @@ def _bytesTo32BitValue(byteValues: [bytes, bytes, bytes, bytes]) -> int:
 
 
 class Roboclaw:
-    def __init__(self, comPort, baudRate, packetTimeout=0.01, retries=3, communicationTimeout=1):
+    def __init__(self, address, comPort, baudRate, packetTimeout=0.01, retries=3, communicationTimeout=1):
+        self.__address = address
         self.__comPort = comPort
         self.__baudRate = baudRate
         self.__packetTimeout = packetTimeout
@@ -426,7 +428,7 @@ class Roboclaw:
         data = self.__port.read(1)
 
         if len(data) > 0:
-            return bool(data[0] & 0xFF)
+            return bool(unpack('>B', data)[0] & 0xFF)
         return False
 
     def _writeAddressAndCommand(self, address: int, commandType: Command) -> None:
@@ -442,17 +444,16 @@ class Roboclaw:
         for bit in data:
             self._writeSingleByte(bit)
 
-    def _sendSetCommand(self, address: int, commandType: Command, data: [bytes]) -> bool:
+    def _sendSetCommand(self, commandType: Command, data: bytes, address: int = None) -> bool:
+        assert address is None or address in range(0x80, 0x88)
+        message = bytes([self.__address] if address is None else [address]) + pack('>B', commandType.value) + data
         for _ in range(0, self.__maxRetries):
-            self.__port.flushInput()
+            self._updateCRC16(message)
+            message += _16BitValueToBytes(self.__crc16)
 
-            self._clearCRC16()
-            self._writeAddressAndCommand(address, commandType)
+            self.__port.write(message)
 
-            self._updateCRC16(data)
-            self._writeData(data)
-
-            if self._writeCRC16WriteOnly():
+            if self._isAcknowledged():
                 return True
         return False
 
@@ -473,8 +474,8 @@ class Roboclaw:
         return False, []
 
     # Publicly accessible motion commands
-    def driveM1Forward(self, address: int, value: int) -> bool:
-        return self._sendSetCommand(address, self.Command.DRIVE_M1_FORWARD, [bytes(value & 0xFF)])
+    def driveM1Forward(self, value: int, address: int = None) -> bool:
+        return self._sendSetCommand(self.Command.DRIVE_M1_FORWARD, bytes(value & 0xFF), address)
 
     def driveM1Backward(self, address: int, value: int) -> bool:
         return self._sendSetCommand(address, self.Command.DRIVE_M1_BACKWARD, [bytes(value & 0xFF)])

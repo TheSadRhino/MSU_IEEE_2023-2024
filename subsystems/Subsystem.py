@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 
 class Subsystem(ABC):
     @abstractmethod
-    def setup(self):
+    def setupSystem(self):
         pass
 
     @abstractmethod
@@ -16,4 +16,8 @@ class Subsystem(ABC):
 
     @abstractmethod
     def writeOutput(self):
+        pass
+
+    @abstractmethod
+    def teardownSystem(self):
         pass

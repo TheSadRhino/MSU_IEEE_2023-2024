@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from subsystems.Robot import Robot
+
 
 class Action(ABC):
     @abstractmethod
@@ -11,7 +13,7 @@ class Action(ABC):
         pass
 
     @abstractmethod
-    def onStart(self):
+    def onStart(self, robot: Robot = None):
         pass
 
     @abstractmethod
