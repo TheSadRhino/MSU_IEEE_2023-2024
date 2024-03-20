@@ -1,15 +1,20 @@
-frontRightSideTOFSensorPins = (0x29, 25, "VL53L0X")
-frontTOFSensorPins = (0x30, 26, "VL53L0X")
-frontLeftSideTOFSensorPins = (0x31, 27, "VL53L0X")
-middleLeftSideTOFSensorPins = (0x32, 28, "VL6180X")
-rearLeftSideTOFSensorPins = (0x33, 29, "VL53L0X")
-rearLeftRearTOFSensorPins = (0x34, 30, "VL6180X")
-rearRightRearTOFSensorPins = (0x35, 31, "VL6180X")
-rearRightSideTOFSensorPins = (0x36, 32, "VL6180X")
+# Address, GPIO pin, physical pin location, sensor type
+
+frontRightSideTOFSensorPins = (0x29, 20, 38, "VL53L0X")
+frontTOFSensorPins = (0x30, 26, 37, "VL6180X")
+frontLeftSideTOFSensorPins = (0x31, 13, 33, "VL6180X")
+middleLeftSideTOFSensorPins = (0x32, 8, 24, "VL53L0X")
+rearLeftSideTOFSensorPins = (0x33, 19, 35, "VL6180X")
+rearLeftRearTOFSensorPins = (0x34, 6, 31, "VL53L0X")
+rearRightRearTOFSensorPins = (0x35, 25, 22, "VL6180X")
+rearRightSideTOFSensorPins = (0x36, 24, 18, "VL53L0X")
 
 tofSensorPins = [frontRightSideTOFSensorPins, frontTOFSensorPins, frontLeftSideTOFSensorPins,
                  middleLeftSideTOFSensorPins, rearLeftSideTOFSensorPins, rearLeftRearTOFSensorPins,
                  rearRightRearTOFSensorPins, rearRightSideTOFSensorPins]
 
-bno085SensorPins = (0x4A, 0, "BNO085")
-lightSensorPins = (0x39, 33, "AS7341")
+bno085SensorPins = (0x4A, 0, 0, "BNO085")
+lightSensorPins = (0x39, 7, 26, "AS7341")
+
+redButtonPins = (None, 17, 11, "Limit Switch")
+redLEDPins = (None, 27, 13, "LED")
