@@ -1,8 +1,18 @@
+from digitalio import DigitalInOut
+
 from actions import Action
+from configurations.RobotConstants import tofSensorPins
 
 
 class Robot:
     def __init__(self):
+        self.__tofSensorPins = []
+
+        for (address, pin) in tofSensorPins:
+            self.__tofSensorPins.append(DigitalInOut(pin))
+
+        self.__tofSensorList = []
+
 
         self.__subsystemList = ()
 
