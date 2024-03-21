@@ -30,6 +30,21 @@ from adafruit_vl53l0x import VL53L0X
 i2c = board.I2C()  # uses board.SCL and board.SDA
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
+totalRemoval = [
+    DigitalInOut(board.D20),
+    DigitalInOut(board.D26),
+    DigitalInOut(board.D13),
+    DigitalInOut(board.D8),
+    DigitalInOut(board.D19),
+    DigitalInOut(board.D6),
+    DigitalInOut(board.D25),
+    DigitalInOut(board.D24)
+]
+for remove in totalRemoval:
+    remove.switch_to_output(value=False)
+
+
+time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
 xshut = [
     DigitalInOut(board.D20),
