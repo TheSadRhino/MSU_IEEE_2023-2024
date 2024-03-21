@@ -9,6 +9,7 @@ from adafruit_vl53l0x import VL53L0X
 from adafruit_vl6180x import VL6180X
 from digitalio import DigitalInOut
 from serial import Serial
+import RPi.GPIO as GPIO
 
 from actions import Action
 from maestro.maestro import MaestroController
@@ -19,6 +20,8 @@ from utilities import MathUtilities, StatisticsUtility
 
 class Robot:
     def __init__(self):
+        GPIO.setmode(GPIO.BCM)
+
         self.__ledOn = False
         self.__buttonPressed = False
 
@@ -85,12 +88,12 @@ class Robot:
             .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
 
         for (address, pinGPIO, pinBoard, name) in RobotConstants.tofSensorPins:
-            pin = DigitalInOut(digitalio.Pin(pinGPIO))
-            pin.switch_to_output(False)
-            self.__tofSensorPins.append((pin, address, name))
+            GPIO.setup(pinGPIO, GPIO.OUT)
+            GPIO.output(pinGPIO, False)
+            self.__tofSensorPins.append((pinGPIO, address, name))
 
         for pin, address, name in self.__tofSensorPins:
-            pin.value = True
+            GPIO.output(pin, True)
 
             if name == "VL53L0X":
                 i2cDevice = VL53L0X(self.__i2c)
@@ -99,7 +102,6 @@ class Robot:
                 #i2cDevice = VL6180X(self.__i2c)
                 dave = 1
             self.__tofSensors.update((address, i2cDevice))
-            pin.value = False
 
         self.__lightSensor = AS7341(self.__i2c, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
