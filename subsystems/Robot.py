@@ -1,3 +1,5 @@
+import threading
+
 import board
 import digitalio
 from adafruit_as7341 import AS7341
@@ -122,6 +124,9 @@ class Robot:
 
         self._setupRobot()
         self._startTOFSensorRanging()
+
+        updateThread = threading.Thread(target=self._updateRobot(), name="Robot Update Thread", daemon=True)
+        updateThread.start()
 
     def runAction(self, action: Action):
         action.onStart(self)
@@ -276,6 +281,9 @@ class Robot:
     def getButtonPress(self):
         return self.__buttonPressed
 
+    def setButtonLED(self, ledOn):
+        self.__ledOn = ledOn
+
     def _setupRobot(self):
         for subsystem in self.__subsystemList:
             subsystem.setupSystem()
@@ -392,6 +400,10 @@ class Robot:
         self.__lightSensor.led = self.__lightSensorLEDOn
 
     def _updateRobot(self):
+        while True:
+            self._updateRobotIteration()
+
+    def _updateRobotIteration(self):
         for subsystem in self.__subsystemList:
             subsystem.readInput()
         self._readInput()
