@@ -21,6 +21,12 @@ class Robot:
         self.__pitchOffset = 0.0
         self.__rollOffset = 0.0
 
+        self.__normalizedXVelocity = 0.0
+        self.__normalizedYVelocity = 0.0
+        self.__normalizedHeadingVelocity = 0.0
+        self.__normalizedWheelVelocities = 4*[0]
+        self.__wheelVelocities = 4*[0]
+
         self.__servoPositions = 6*[0]
         self.__servoPositions[RobotConstants.elevatorServoPin] = RobotConstants.elevatorServoDownPosition
         self.__servoPositions[RobotConstants.sideIntakeServoPin] = RobotConstants.sideIntakeServoUpPosition
@@ -81,6 +87,11 @@ class Robot:
         self.__yawOffset = -self.__yaw
         self.__pitchOffset = -self.__pitch
         self.__rollOffset = -self.__roll
+
+    def setNormalizedVelocity(self, x, y, heading):
+        self.__normalizedXVelocity = x
+        self.__normalizedYVelocity = y
+        self.__normalizedHeadingVelocity = heading
 
     def setElevatorServoPosition(self, position):
         self.__servoPositions[RobotConstants.elevatorServoPin] = position
@@ -180,6 +191,16 @@ class Robot:
         self.__yawFinal = self.__yaw + self.__yawOffset
         self.__pitchFinal = self.__pitch + self.__pitchOffset
         self.__rollFinal = self.__roll + self.__rollOffset
+
+        self.__normalizedWheelVelocities[0] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
+                                               self.__normalizedHeadingVelocity) / 3
+        self.__normalizedWheelVelocities[1] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
+                                               self.__normalizedHeadingVelocity) / 3
+        self.__normalizedWheelVelocities[2] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
+                                               self.__normalizedHeadingVelocity) / 3
+        self.__normalizedWheelVelocities[3] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
+                                               self.__normalizedHeadingVelocity) / 3
+
 
     def _writeOutput(self):
         for i in range(0, 6):
