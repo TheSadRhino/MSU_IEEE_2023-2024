@@ -85,7 +85,7 @@ class Robot:
             .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
 
         for (address, pinGPIO, pinBoard, name) in RobotConstants.tofSensorPins:
-            pin = DigitalInOut(pinGPIO)
+            pin = DigitalInOut(digitalio.Pin(pinGPIO))
             pin.switch_to_output(False)
             self.__tofSensorPins.append((pin, address, name))
 
@@ -115,9 +115,9 @@ class Robot:
         self.__bno085 = BNO08X_I2C(self.__i2c, address=RobotConstants.bno085SensorPins[0])
         self.__bno085.enable_feature(BNO_REPORT_ROTATION_VECTOR)
 
-        self.__startButton = DigitalInOut(RobotConstants.redButtonPins[1])
+        self.__startButton = DigitalInOut(digitalio.Pin(RobotConstants.redButtonPins[1]))
         self.__startButton.direction = digitalio.Direction.INPUT
-        self.__redLED = DigitalInOut(RobotConstants.redLEDPins[1])
+        self.__redLED = DigitalInOut(digitalio.Pin(RobotConstants.redLEDPins[1]))
         self.__redLED.switch_to_output(value=self.__redLED)
 
         self.__subsystemList = ()
