@@ -273,6 +273,9 @@ class Robot:
     def getRightRearTOFDistanceMovingAverage(self):
         return self.__rightRearTOFDistanceMovingAverage
 
+    def getButtonPress(self):
+        return self.__buttonPressed
+
     def _setupRobot(self):
         for subsystem in self.__subsystemList:
             subsystem.setupSystem()
