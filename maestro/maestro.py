@@ -18,7 +18,7 @@ PY2 = version_info[0] == 2  # Running Python 2.x?
 # These functions provide access to many of the Maestro's capabilities using the
 # Pololu serial protocol
 #
-class Controller:
+class MaestroController:
     # When connected via USB, the Maestro creates two virtual serial ports
     # /dev/ttyACM0 for commands and /dev/ttyACM1 for communications.
     # Be sure the Maestro is configured for "USB Dual Port" serial mode.
@@ -30,9 +30,9 @@ class Controller:
     # assumes.  If two or more controllers are connected to different serial
     # ports, or you are using a Windows OS, you can provide the tty port.  For
     # example, '/dev/ttyACM2' or for Windows, something like 'COM3'.
-    def __init__(self, ttyStr='/dev/ttyACM0', device=0x0c):
+    def __init__(self, ttyStr='/dev/ttyACM0', baudRate=115200, device=0x0c):
         # Open the command port
-        self.usb = serial.Serial(ttyStr)
+        self.usb = serial.Serial(ttyStr, baudrate=baudRate)
         # Command lead-in and device number are sent for each Pololu serial command.
         self.PololuCmd = chr(0xaa) + chr(device)
         # Track target position for each servo. The function isMoving() will
@@ -81,7 +81,9 @@ class Controller:
     # Servo center is at 1500 microseconds, or 6000 quarter-microseconds
     # Typcially valid servo range is 3000 to 9000 quarter-microseconds
     # If channel is configured for digital output, values < 6000 = Low ouput
-    def setTarget(self, chan, target):
+    def setTarget(self, chan, target, microseconds: bool = False):
+        if microseconds:
+            target = target * 4
         # if Min is defined and Target is below, force to Min
         if self.Mins[chan] > 0 and target < self.Mins[chan]:
             target = self.Mins[chan]

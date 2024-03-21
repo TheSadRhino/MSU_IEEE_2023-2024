@@ -1,4 +1,8 @@
 import board
+from serial import Serial
+
+from maestro.maestro import MaestroController
+from roboclaw.bytebuffer import Roboclaw
 from adafruit_as7341 import AS7341
 from adafruit_bno08x import BNO_REPORT_ROTATION_VECTOR
 from adafruit_bno08x.i2c import BNO08X_I2C
@@ -16,6 +20,21 @@ class Robot:
         self.__yawOffset = 0.0
         self.__pitchOffset = 0.0
         self.__rollOffset = 0.0
+
+        self.__servoPositions = 6*[0]
+        self.__servoPositions[RobotConstants.elevatorServoPin] = RobotConstants.elevatorServoDownPosition
+        self.__servoPositions[RobotConstants.sideIntakeServoPin] = RobotConstants.sideIntakeServoUpPosition
+        self.__servoPositions[RobotConstants.clawServoPin] = RobotConstants.clawServoRelaxPosition
+        self.__servoPositions[RobotConstants.frontIntakeServoPin] = RobotConstants.frontIntakeServoUpPosition
+        self.__servoPositions[RobotConstants.boosterAlignmentServoPin] = RobotConstants.boosterAlignmentServoUpPosition
+        self.__servoPositions[RobotConstants.clawDeploymentServoPin] = RobotConstants.clawDeploymentServoUpPosition
+
+        self.__roboclawSystem = Roboclaw(Serial(port=RobotConstants.motorControllerSerialPort,
+                                                baudrate=RobotConstants.motorControllerBaudRate),
+                                         address=RobotConstants.leftSideMotorControllerAddress)
+
+        self.__maestroServoController = MaestroController(ttyStr=RobotConstants.servoControllerSerialPort,
+                                                          baudRate=RobotConstants.servoControllerBaudRate)
 
         self.__i2c = board.I2C()
 
@@ -63,6 +82,63 @@ class Robot:
         self.__pitchOffset = -self.__pitch
         self.__rollOffset = -self.__roll
 
+    def setElevatorServoPosition(self, position):
+        self.__servoPositions[RobotConstants.elevatorServoPin] = position
+
+    def raiseElevator(self):
+        self.setElevatorServoPosition(RobotConstants.elevatorServoUpPosition)
+
+    def lowerElevator(self):
+        self.setElevatorServoPosition(RobotConstants.elevatorServoDownPosition)
+
+    def setSideIntakeServoPosition(self, position):
+        self.__servoPositions[RobotConstants.sideIntakeServoPin] = position
+
+    def raiseSideIntake(self):
+        self.setSideIntakeServoPosition(RobotConstants.sideIntakeServoUpPosition)
+
+    def deploySideIntake(self):
+        self.setSideIntakeServoPosition(RobotConstants.sideIntakeServoDownPosition)
+
+    def setClawServoPosition(self, position):
+        self.__servoPositions[RobotConstants.clawServoPin] = position
+
+    def clampClaw(self):
+        self.setClawServoPosition(RobotConstants.clawServoClampPosition)
+
+    def relaxClaw(self):
+        self.setClawServoPosition(RobotConstants.clawServoRelaxPosition)
+
+    def openClaw(self):
+        self.setClawServoPosition(RobotConstants.clawServoOpenPosition)
+
+    def setFrontIntakeServoPosition(self, position):
+        self.__servoPositions[RobotConstants.frontIntakeServoPin] = position
+
+    def raiseFrontIntake(self):
+        self.setFrontIntakeServoPosition(RobotConstants.frontIntakeServoUpPosition)
+
+    def deployFrontIntake(self):
+        self.setFrontIntakeServoPosition(RobotConstants.frontIntakeServoDownPosition)
+
+    def setBoosterAlignmentServoPosition(self, position):
+        self.__servoPositions[RobotConstants.boosterAlignmentServoPin] = position
+
+    def deployBoosterAlignmentTool(self):
+        self.setBoosterAlignmentServoPosition(RobotConstants.boosterAlignmentServoDownPosition)
+
+    def retractBoosterAlignmentTool(self):
+        self.setBoosterAlignmentServoPosition(RobotConstants.boosterAlignmentServoUpPosition)
+
+    def setClawDeploymentServoPosition(self, position):
+        self.__servoPositions[RobotConstants.clawDeploymentServoPin] = position
+
+    def deployClaw(self):
+        self.setClawDeploymentServoPosition(RobotConstants.clawDeploymentServoDownPosition)
+
+    def retractClaw(self):
+        self.setClawDeploymentServoPosition(RobotConstants.clawDeploymentServoUpPosition)
+
     def _setupRobot(self):
         for subsystem in self.__subsystemList:
             subsystem.setupSystem()
@@ -92,6 +168,9 @@ class Robot:
         self.__rightRearTOFDistance = self.__tofDistances.get(RobotConstants.rearRightSideTOFSensorPins[0])
         self.__rightFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontRightSideTOFSensorPins[0])
 
+        amperageSuccess, self.__frontIntakeAmperage, self.__rearIntakeAmperage = self.__roboclawSystem.read_currents(
+            RobotConstants.intakeMotorControllerAddress)
+
     def _updateSystem(self):
         self.__yaw, self.__pitch, self.__roll = MathUtilities.quaternionToEuler(self.__quaternionI,
                                                                                 self.__quaternionJ,
@@ -103,8 +182,8 @@ class Robot:
         self.__rollFinal = self.__roll + self.__rollOffset
 
     def _writeOutput(self):
-        if self.__yawFinal == 0:
-            self.__yawFinal = 0
+        for i in range(0, 6):
+            self.__maestroServoController.setTarget(i, self.__servoPositions[i], True)
 
     def _updateRobot(self):
         for subsystem in self.__subsystemList:

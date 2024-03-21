@@ -1,6 +1,5 @@
 # --Sensors--
 # Address, GPIO pin, physical pin location, sensor type
-
 frontRightSideTOFSensorPins = (0x29, 20, 38, "VL53L0X")
 frontTOFSensorPins = (0x30, 26, 37, "VL6180X")
 frontLeftSideTOFSensorPins = (0x31, 13, 33, "VL6180X")
@@ -21,6 +20,9 @@ redButtonPins = (None, 17, 11, "Limit Switch")
 redLEDPins = (None, 27, 13, "LED")
 
 # --Servos--
+servoControllerSerialPort = "/dev/ttyAMA0"
+servoControllerBaudRate = 115200
+
 elevatorServoPin = 0
 elevatorServoUpPosition = 1700
 elevatorServoDownPosition = 1150
@@ -31,6 +33,7 @@ sideIntakeServoDownPosition = 1350
 
 clawServoPin = 2
 clawServoClampPosition = 1250
+clawServoRelaxPosition = 1300
 clawServoOpenPosition = 1350
 
 frontIntakeServoPin = 3
@@ -44,3 +47,21 @@ boosterAlignmentServoDownPosition = 825
 clawDeploymentServoPin = 5
 clawDeploymentServoUpPosition = 2175
 clawDeploymentServoDownPosition = 790
+
+# --Motors--
+motorControllerSerialPort = "/dev/ttyAMA1"
+motorControllerBaudRate = 115200
+
+leftSideMotorControllerAddress = 0x80
+rightSideMotorControllerAddress = 0x81
+intakeMotorControllerAddress = 0x82
+climberMotorControllerAddress = 0x83
+
+frontIntakeCurrentThresholdForJams = 1.5
+sideIntakeCurrentThresholdForJams = 1.5
+driveMotorMaximumVelocityTicksPerSecond = 2250
+
+climberMotorTuckedPosition = 0
+climberMotorMountZiplinePosition = 500
+climberMotorRideZiplinePosition = 750
+
