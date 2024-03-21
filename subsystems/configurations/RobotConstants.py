@@ -12,9 +12,12 @@ rearRightSideTOFSensorPins = (0x36, 24, 18, "VL53L0X")
 tofSensorPins = [frontRightSideTOFSensorPins, frontTOFSensorPins, frontLeftSideTOFSensorPins,
                  middleLeftSideTOFSensorPins, rearLeftSideTOFSensorPins, rearLeftRearTOFSensorPins,
                  rearRightRearTOFSensorPins, rearRightSideTOFSensorPins]
+tofSensorMovingAverageWindow = 3
 
 bno085SensorPins = (0x4A, 0, 0, "BNO085")
 lightSensorPins = (0x39, 7, 26, "AS7341")
+lightSensorStandardDeviationWindow = 15
+lightSensorNumberOfChannels = 8
 
 redButtonPins = (None, 17, 11, "Limit Switch")
 redLEDPins = (None, 27, 13, "LED")
@@ -58,7 +61,9 @@ intakeMotorControllerAddress = 0x82
 climberMotorControllerAddress = 0x83
 
 frontIntakeCurrentThresholdForJams = 1.5
+frontIntakeCurrentMovingAverageWindow = 5
 sideIntakeCurrentThresholdForJams = 1.5
+sideIntakeCurrentMovingAverageWindow = 5
 driveMotorMaximumVelocityTicksPerSecond = 2250
 
 climberMotorTuckedPosition = 0

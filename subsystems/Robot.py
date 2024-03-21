@@ -12,7 +12,7 @@ from actions import Action
 from maestro.maestro import MaestroController
 from roboclaw.bytebuffer import Roboclaw
 from subsystems.configurations import RobotConstants
-from utilities import MathUtilities
+from utilities import MathUtilities, StatisticsUtility
 
 
 class Robot:
@@ -32,6 +32,12 @@ class Robot:
 
         self.__normalizedIntakeVelocities = 2*[0.0]
         self.__intakeVelocities = 2*[0]
+        self.__frontIntakeAmperageMovingAverageCalculator = StatisticsUtility \
+            .MovingAverage(RobotConstants.frontIntakeCurrentMovingAverageWindow)
+        self.__sideIntakeAmperageMovingAverageCalculator = StatisticsUtility \
+            .MovingAverage(RobotConstants.sideIntakeCurrentMovingAverageWindow)
+        self.__averageFrontIntakeAmperage = 0.0
+        self.__averageSideIntakeAmperage = 0.0
 
         self.__desiredClimberPosition = 0
         self.__lastDesiredClimberPosition = 0
@@ -59,6 +65,23 @@ class Robot:
         self.__tofSensors = {}
         self.__tofDistances = {}
 
+        self.__frontTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__leftFrontTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__leftMiddleTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__leftRearTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__rearLeftTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__rearRightTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__rightRearTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+        self.__rightFrontTOFDistanceMovingAverageCalculator = StatisticsUtility\
+            .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
+
         for (address, pinGPIO, pinBoard, name) in RobotConstants.tofSensorPins:
             pin = DigitalInOut(pinGPIO)
             pin.switch_to_output(False)
@@ -77,6 +100,15 @@ class Robot:
         self.__lightSensor = AS7341(self.__i2c, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
         self.__lightSensorLEDOn = False
+
+        self.__lightSensorStandardDeviationCalculators = RobotConstants\
+            .lightSensorNumberOfChannels * [StatisticsUtility.MovingStandardDeviation(0)]
+
+        for i in range(0, RobotConstants.lightSensorNumberOfChannels):
+            self.__lightSensorStandardDeviationCalculators[i] = StatisticsUtility.MovingStandardDeviation(
+                RobotConstants.lightSensorStandardDeviationWindow)
+
+        self.__lightSensorStandardDeviations = RobotConstants.lightSensorNumberOfChannels * [0.0]
 
         self.__bno085 = BNO08X_I2C(self.__i2c, address=RobotConstants.bno085SensorPins[0])
         self.__bno085.enable_feature(BNO_REPORT_ROTATION_VECTOR)
@@ -106,6 +138,15 @@ class Robot:
         self.__yawOffset = -self.__yaw
         self.__pitchOffset = -self.__pitch
         self.__rollOffset = -self.__roll
+
+    def getAngles(self):
+        return self.__yawFinal, self.__pitchFinal, self.__rollFinal
+
+    def getLightSensorChannels(self):
+        return self.__lightSensorChannels
+
+    def getLightSensorStandardDeviations(self):
+        return self.__lightSensorStandardDeviations
 
     def setNormalizedVelocity(self, x, y, heading):
         self.__normalizedXVelocity = x
@@ -184,6 +225,54 @@ class Robot:
     def retractClaw(self):
         self.setClawDeploymentServoPosition(RobotConstants.clawDeploymentServoUpPosition)
 
+    def getRightFrontTOFDistance(self):
+        return self.__rightFrontTOFDistance
+
+    def getRightFrontTOFDistanceMovingAverage(self):
+        return self.__rightFrontTOFDistanceMovingAverage
+
+    def getFrontTOFDistance(self):
+        return self.__frontTOFDistance
+
+    def getFrontTOFDistanceMovingAverage(self):
+        return self.__frontTOFDistanceMovingAverage
+
+    def getLeftFrontTOFDistance(self):
+        return self.__leftFrontTOFDistance
+
+    def getLeftFrontTOFDistanceMovingAverage(self):
+        return self.__leftFrontTOFDistanceMovingAverage
+
+    def getLeftMiddleTOFDistance(self):
+        return self.__leftMiddleTOFDistance
+
+    def getLeftMiddleTOFDistanceMovingAverage(self):
+        return self.__leftMiddleTOFDistanceMovingAverage
+
+    def getLeftRearTOFDistance(self):
+        return self.__leftRearTOFDistance
+
+    def getLeftRearTOFDistanceMovingAverage(self):
+        return self.__leftRearTOFDistanceMovingAverage
+
+    def getRearLeftTOFDistance(self):
+        return self.__rearLeftTOFDistance
+
+    def getRearLeftTOFDistanceMovingAverage(self):
+        return self.__rearLeftTOFDistanceMovingAverage
+
+    def getRearRightTOFDistance(self):
+        return self.__rearRightTOFDistance
+
+    def getRearRightTOFDistanceMovingAverage(self):
+        return self.__rearRightTOFDistanceMovingAverage
+
+    def getRightRearTOFDistance(self):
+        return self.__rightRearTOFDistance
+
+    def getRightRearTOFDistanceMovingAverage(self):
+        return self.__rightRearTOFDistanceMovingAverage
+
     def _setupRobot(self):
         for subsystem in self.__subsystemList:
             subsystem.setupSystem()
@@ -215,7 +304,7 @@ class Robot:
         self.__rightRearTOFDistance = self.__tofDistances.get(RobotConstants.rearRightSideTOFSensorPins[0])
         self.__rightFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontRightSideTOFSensorPins[0])
 
-        amperageSuccess, self.__frontIntakeAmperage, self.__rearIntakeAmperage = self.__roboclawSystem.read_currents(
+        amperageSuccess, self.__frontIntakeAmperage, self.__sideIntakeAmperage = self.__roboclawSystem.read_currents(
             RobotConstants.intakeMotorControllerAddress)
 
     def _updateSystem(self):
@@ -247,6 +336,32 @@ class Robot:
             self.__normalizedWheelVelocities[i] /= maximum
             self.__wheelVelocities[i] = int(self.__normalizedWheelVelocities * RobotConstants
                                             .driveMotorMaximumVelocityTicksPerSecond)
+
+        for i in range(0, len(self.__lightSensorStandardDeviationCalculators)):
+            self.__lightSensorStandardDeviations[i] = self.__lightSensorStandardDeviationCalculators[i]\
+                .addDataPointAndCalculateStandardDeviation(self.__lightSensorChannels[i])
+
+        self.__frontTOFDistanceMovingAverage = self.__frontTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__frontTOFDistance)
+        self.__leftFrontTOFDistanceMovingAverage = self.__leftFrontTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__leftFrontTOFDistance)
+        self.__leftMiddleTOFDistanceMovingAverage = self.__leftMiddleTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__leftMiddleTOFDistance)
+        self.__leftRearTOFDistanceMovingAverage = self.__leftRearTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__leftRearTOFDistance)
+        self.__rearLeftTOFDistanceMovingAverage = self.__rearLeftTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__rearLeftTOFDistance)
+        self.__rearRightTOFDistanceMovingAverage = self.__rearRightTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__rearRightTOFDistance)
+        self.__rightRearTOFDistanceMovingAverage = self.__rightRearTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__rightRearTOFDistance)
+        self.__rightFrontTOFDistanceMovingAverage = self.__rightFrontTOFDistanceMovingAverageCalculator\
+            .addDataPointAndCalculateAverage(self.__rightFrontTOFDistance)
+
+        self.__averageFrontIntakeAmperage = self.__frontIntakeAmperageMovingAverageCalculator \
+            .addDataAndCalculateAverage(self.__frontIntakeAmperage)
+        self.__averageSideIntakeAmperage = self.__sideIntakeAmperageMovingAverageCalculator \
+            .addDataAndCalculateAverage(self.__sideIntakeAmperage)
 
     def _writeOutput(self):
         for i in range(0, 6):
