@@ -25,24 +25,32 @@ import time
 import board
 from digitalio import DigitalInOut
 from adafruit_vl53l0x import VL53L0X
+import RPi.GPIO as GPIO
 
 # declare the singleton variable for the default I2C bus
 i2c = board.I2C()  # uses board.SCL and board.SDA
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
 totalRemoval = [
-    DigitalInOut(board.D20),
-    DigitalInOut(board.D26),
-    DigitalInOut(board.D13),
-    DigitalInOut(board.D8),
-    DigitalInOut(board.D19),
-    DigitalInOut(board.D6),
-    DigitalInOut(board.D25),
-    DigitalInOut(board.D24)
+    20,
+    26,
+    13,
+    8,
+    19,
+    6,
+    25,
+    24
 ]
-for remove in totalRemoval:
-    remove.switch_to_output(value=False)
+GPIO.setmode(GPIO.BCM)
 
+for remove in totalRemoval:
+    GPIO.setup(remove, GPIO.OUT)
+    GPIO.output(remove, False)
+
+time.sleep(5)
+
+for remove in totalRemoval:
+    GPIO.output(remove, True)
 
 time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
