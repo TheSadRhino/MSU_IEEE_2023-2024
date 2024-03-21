@@ -52,7 +52,7 @@ clawDeploymentServoUpPosition = 2175
 clawDeploymentServoDownPosition = 790
 
 # --Motors--
-motorControllerSerialPort = "/dev/ttyAMA1"
+motorControllerSerialPort = "/dev/ttyAMA2"
 motorControllerBaudRate = 115200
 
 leftSideMotorControllerAddress = 0x80
