@@ -45,7 +45,7 @@ GPIO.setmode(GPIO.BCM)
 
 for remove in totalRemoval:
     GPIO.setup(remove, GPIO.OUT)
-    GPIO.output(remove, False)
+    GPIO.output(remove, True)
 
 time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
@@ -62,7 +62,8 @@ vl53 = []
 # now change the addresses of the VL53L0X sensors
 for i, power_pin in enumerate(xshut):
     # turn on the VL53L0X to allow hardware check
-    GPIO.output(power_pin, True)
+    GPIO.setup(power_pin, GPIO.OUT)
+    GPIO.output(power_pin, False)
     # instantiate the VL53L0X sensor on the I2C bus & insert it into the "vl53" list
     vl53.insert(i, VL53L0X(i2c))  # also performs VL53L0X hardware check
 
