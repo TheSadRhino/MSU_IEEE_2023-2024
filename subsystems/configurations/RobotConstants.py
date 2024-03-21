@@ -65,3 +65,7 @@ climberMotorTuckedPosition = 0
 climberMotorMountZiplinePosition = 500
 climberMotorRideZiplinePosition = 750
 
+climberMotorMaximumAcceleration = 111000
+climberMotorMaximumDeceleration = 20000
+climberMotorMaximumVelocity = 500
+

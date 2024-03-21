@@ -2,6 +2,10 @@ import math
 from math import atan2, asin
 
 
+def threeDimensionalMagnitude(x, y, z):
+    return math.sqrt(x**2 + y**2 + z**2)
+
+
 def quaternionToEuler(qr, qi, qj, qk, degrees: bool = False):
     sqr = qr ** 2
     sqi = qi ** 2

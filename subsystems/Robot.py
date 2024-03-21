@@ -1,22 +1,25 @@
 import board
-from serial import Serial
-
-from maestro.maestro import MaestroController
-from roboclaw.bytebuffer import Roboclaw
+import digitalio
 from adafruit_as7341 import AS7341
 from adafruit_bno08x import BNO_REPORT_ROTATION_VECTOR
 from adafruit_bno08x.i2c import BNO08X_I2C
 from adafruit_vl53l0x import VL53L0X
 from adafruit_vl6180x import VL6180X
 from digitalio import DigitalInOut
+from serial import Serial
 
 from actions import Action
+from maestro.maestro import MaestroController
+from roboclaw.bytebuffer import Roboclaw
 from subsystems.configurations import RobotConstants
 from utilities import MathUtilities
 
 
 class Robot:
     def __init__(self):
+        self.__ledOn = False
+        self.__buttonPressed = False
+
         self.__yawOffset = 0.0
         self.__pitchOffset = 0.0
         self.__rollOffset = 0.0
@@ -24,8 +27,16 @@ class Robot:
         self.__normalizedXVelocity = 0.0
         self.__normalizedYVelocity = 0.0
         self.__normalizedHeadingVelocity = 0.0
-        self.__normalizedWheelVelocities = 4*[0]
+        self.__normalizedWheelVelocities = 4*[0.0]
         self.__wheelVelocities = 4*[0]
+
+        self.__normalizedIntakeVelocities = 2*[0.0]
+        self.__intakeVelocities = 2*[0]
+
+        self.__desiredClimberPosition = 0
+        self.__lastDesiredClimberPosition = 0
+        self.__setClimberPosition = True
+        self.__climberShouldOverrideLastMovement = True
 
         self.__servoPositions = 6*[0]
         self.__servoPositions[RobotConstants.elevatorServoPin] = RobotConstants.elevatorServoDownPosition
@@ -64,8 +75,16 @@ class Robot:
             pin.value = False
 
         self.__lightSensor = AS7341(self.__i2c, address=RobotConstants.lightSensorPins[0])
+        self.__lightSensorLEDCurrent = 0
+        self.__lightSensorLEDOn = False
+
         self.__bno085 = BNO08X_I2C(self.__i2c, address=RobotConstants.bno085SensorPins[0])
         self.__bno085.enable_feature(BNO_REPORT_ROTATION_VECTOR)
+
+        self.__startButton = DigitalInOut(RobotConstants.redButtonPins[1])
+        self.__startButton.direction = digitalio.Direction.INPUT
+        self.__redLED = DigitalInOut(RobotConstants.redLEDPins[1])
+        self.__redLED.switch_to_output(value=self.__redLED)
 
         self.__subsystemList = ()
 
@@ -92,6 +111,21 @@ class Robot:
         self.__normalizedXVelocity = x
         self.__normalizedYVelocity = y
         self.__normalizedHeadingVelocity = heading
+
+    def setFrontIntakeNormalizedVelocity(self, speed):
+        self.__intakeVelocities[0] = speed
+
+    def setRearIntakeNormalizedVelocity(self, speed):
+        self.__intakeVelocities[1] = speed
+
+    def setClimberMotorPosition(self, position):
+        self.__desiredClimberPosition = position
+
+    def setLightSensorLEDCurrent(self, current):
+        self.__lightSensorLEDCurrent = current
+
+    def setLightSensorLEDEnable(self, enableValue):
+        self.__lightSensorLEDOn = enableValue
 
     def setElevatorServoPosition(self, position):
         self.__servoPositions[RobotConstants.elevatorServoPin] = position
@@ -155,6 +189,8 @@ class Robot:
             subsystem.setupSystem()
 
     def _readInput(self):
+        self.__buttonPressed = self.__startButton.value
+
         self.__quaternionI, self.__quaternionJ, self.__quaternionK, self.__quaternionReal = self.__bno085.quaternion
 
         self.__lightSensorChannels = self.__lightSensor.all_channels
@@ -183,6 +219,11 @@ class Robot:
             RobotConstants.intakeMotorControllerAddress)
 
     def _updateSystem(self):
+        if self.__desiredClimberPosition != self.__lastDesiredClimberPosition:
+            self.__setClimberPosition = True
+
+        self.__lastDesiredClimberPosition = self.__desiredClimberPosition
+
         self.__yaw, self.__pitch, self.__roll = MathUtilities.quaternionToEuler(self.__quaternionI,
                                                                                 self.__quaternionJ,
                                                                                 self.__quaternionK,
@@ -192,19 +233,45 @@ class Robot:
         self.__pitchFinal = self.__pitch + self.__pitchOffset
         self.__rollFinal = self.__roll + self.__rollOffset
 
-        self.__normalizedWheelVelocities[0] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
-                                               self.__normalizedHeadingVelocity) / 3
-        self.__normalizedWheelVelocities[1] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
-                                               self.__normalizedHeadingVelocity) / 3
-        self.__normalizedWheelVelocities[2] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
-                                               self.__normalizedHeadingVelocity) / 3
+        self.__normalizedWheelVelocities[0] = (self.__normalizedXVelocity - self.__normalizedYVelocity -
+                                               self.__normalizedHeadingVelocity)
+        self.__normalizedWheelVelocities[1] = (self.__normalizedXVelocity + self.__normalizedYVelocity -
+                                               self.__normalizedHeadingVelocity)
+        self.__normalizedWheelVelocities[2] = (self.__normalizedXVelocity - self.__normalizedYVelocity +
+                                               self.__normalizedHeadingVelocity)
         self.__normalizedWheelVelocities[3] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
-                                               self.__normalizedHeadingVelocity) / 3
+                                               self.__normalizedHeadingVelocity)
 
+        maximum = max((self.__normalizedWheelVelocities, 1.0))
+        for i in range(0, len(self.__normalizedWheelVelocities)):
+            self.__normalizedWheelVelocities[i] /= maximum
+            self.__wheelVelocities[i] = int(self.__normalizedWheelVelocities * RobotConstants
+                                            .driveMotorMaximumVelocityTicksPerSecond)
 
     def _writeOutput(self):
         for i in range(0, 6):
             self.__maestroServoController.setTarget(i, self.__servoPositions[i], True)
+
+        self.__roboclawSystem.speed_m1_m2(self.__wheelVelocities[0], self.__wheelVelocities[1],
+                                          RobotConstants.leftSideMotorControllerAddress)
+        self.__roboclawSystem.speed_m1_m2(self.__wheelVelocities[3], self.__wheelVelocities[2],
+                                          RobotConstants.rightSideMotorControllerAddress)
+        self.__roboclawSystem.speed_m1_m2(self.__intakeVelocities[0], self.__intakeVelocities[1],
+                                          RobotConstants.intakeMotorControllerAddress)
+
+        if self.__setClimberPosition:
+            self.__roboclawSystem.speed_accel_deccel_position_m1(RobotConstants.climberMotorMaximumAcceleration,
+                                                                 RobotConstants.climberMotorMaximumVelocity,
+                                                                 RobotConstants.climberMotorMaximumDeceleration,
+                                                                 self.__desiredClimberPosition,
+                                                                 self.__climberShouldOverrideLastMovement,
+                                                                 RobotConstants.climberMotorControllerAddress)
+            self.__setClimberPosition = False
+
+        self.__redLED.value = self.__ledOn
+
+        self.__lightSensor.led_current = self.__lightSensorLEDCurrent
+        self.__lightSensor.led = self.__lightSensorLEDOn
 
     def _updateRobot(self):
         for subsystem in self.__subsystemList:
