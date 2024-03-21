@@ -4,7 +4,7 @@ from actions.Action import Action
 from subsystems.Robot import Robot
 
 
-class RunOnceAction(ABC, Action):
+class RunOnceAction(Action, ABC):
     def isFinished(self):
         return True
 
