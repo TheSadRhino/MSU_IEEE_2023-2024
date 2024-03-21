@@ -48,25 +48,13 @@ for remove in totalRemoval:
     GPIO.output(remove, False)
 
 time.sleep(5)
-
-for remove in totalRemoval:
-    GPIO.output(remove, True)
-
-time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
 xshut = [
-    DigitalInOut(board.D20),
-    DigitalInOut(board.D8),
+    20,
+    8,
     # add more VL53L0X sensors by defining their SHDN pins here
 ]
 
-for power_pin in xshut:
-    # make sure these pins are a digital output, not a digital input
-    power_pin.switch_to_output(value=False)
-    # These pins are active when Low, meaning:
-    #   if the output signal is LOW, then the VL53L0X sensor is off.
-    #   if the output signal is HIGH, then the VL53L0X sensor is on.
-# all VL53L0X sensors are now off
 
 # initialize a list to be used for the array of VL53L0X sensors
 vl53 = []
@@ -74,7 +62,7 @@ vl53 = []
 # now change the addresses of the VL53L0X sensors
 for i, power_pin in enumerate(xshut):
     # turn on the VL53L0X to allow hardware check
-    power_pin.value = True
+    GPIO.output(power_pin, True)
     # instantiate the VL53L0X sensor on the I2C bus & insert it into the "vl53" list
     vl53.insert(i, VL53L0X(i2c))  # also performs VL53L0X hardware check
 
