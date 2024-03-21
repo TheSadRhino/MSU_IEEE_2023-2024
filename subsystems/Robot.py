@@ -93,9 +93,11 @@ class Robot:
             pin.value = True
 
             if name == "VL53L0X":
-                i2cDevice = VL53L0X(self.__i2c, address=address)
+                i2cDevice = VL53L0X(self.__i2c)
+                i2cDevice.set_address(address)
             else:
-                i2cDevice = VL6180X(self.__i2c, address=address)
+                #i2cDevice = VL6180X(self.__i2c)
+                dave = 1
             self.__tofSensors.update((address, i2cDevice))
             pin.value = False
 
