@@ -26,37 +26,29 @@ import board
 from digitalio import DigitalInOut
 from adafruit_vl53l0x import VL53L0X
 import RPi.GPIO as GPIO
+from adafruit_extended_bus import ExtendedI2C
+
 
 # declare the singleton variable for the default I2C bus
-i2c = board.I2C()  # uses board.SCL and board.SDA
+i2c = ExtendedI2C(3)
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
-totalRemoval = [
-    20,
-    26,
-    13,
-    8,
-    19,
-    6,
-    25,
-    24
-]
 GPIO.setmode(GPIO.BCM)
-
-for remove in totalRemoval:
-    GPIO.setup(remove, GPIO.OUT)
-    GPIO.output(remove, False)
 
 time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
 xshut = [
-    20,
-    8,
-    6,
-    24
+
+    9
     # add more VL53L0X sensors by defining their SHDN pins here
 ]
 
+GPIO.setup(25, GPIO.OUT)
+GPIO.output(25, False)
+
+for remove in xshut:
+    GPIO.setup(remove, GPIO.OUT)
+    GPIO.output(remove, False)
 
 # initialize a list to be used for the array of VL53L0X sensors
 vl53 = []
