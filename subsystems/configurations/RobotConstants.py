@@ -1,21 +1,21 @@
 # --Sensors--
-# Address, GPIO pin, physical pin location, sensor type
-frontRightSideTOFSensorPins = (0x29, 20, 38, "VL53L0X")
-frontTOFSensorPins = (0x30, 26, 37, "VL6180X")
-frontLeftSideTOFSensorPins = (0x31, 13, 33, "VL6180X")
-middleLeftSideTOFSensorPins = (0x32, 8, 24, "VL53L0X")
-rearLeftSideTOFSensorPins = (0x33, 19, 35, "VL6180X")
-rearLeftRearTOFSensorPins = (0x34, 6, 31, "VL53L0X")
-rearRightRearTOFSensorPins = (0x35, 25, 22, "VL6180X")
-rearRightSideTOFSensorPins = (0x36, 24, 18, "VL53L0X")
+# Address, GPIO pin, I2C Bus, sensor type
+frontRightSideTOFSensorPins = (0x29, 20, 1, "VL53L0X")
+frontTOFSensorPins = (0x30, 26, 1, "VL6180X")
+frontLeftSideTOFSensorPins = (0x31, 13, 1, "VL6180X")
+middleLeftSideTOFSensorPins = (0x32, 8, 1, "VL53L0X")
+rearLeftSideTOFSensorPins = (0x33, 19, 1, "VL6180X")
+rearLeftRearTOFSensorPins = (0x34, 6, 1, "VL53L0X")
+rearRightRearTOFSensorPins = (0x35, 25, 3, "VL6180X")
+rearRightSideTOFSensorPins = (0x36, 9, 3, "VL53L0X")
 
 tofSensorPins = [frontRightSideTOFSensorPins, frontTOFSensorPins, frontLeftSideTOFSensorPins,
                  middleLeftSideTOFSensorPins, rearLeftSideTOFSensorPins, rearLeftRearTOFSensorPins,
                  rearRightRearTOFSensorPins, rearRightSideTOFSensorPins]
 tofSensorMovingAverageWindow = 3
 
-bno085SensorPins = (0x4A, 0, 0, "BNO085")
-lightSensorPins = (0x39, 7, 26, "AS7341")
+bno085SensorPins = (0x4A, 0, 3, "BNO085")
+lightSensorPins = (0x39, 7, 3, "AS7341")
 lightSensorStandardDeviationWindow = 15
 lightSensorNumberOfChannels = 8
 

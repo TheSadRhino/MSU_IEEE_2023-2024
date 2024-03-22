@@ -6,10 +6,11 @@ from adafruit_as7341 import AS7341
 from adafruit_bno08x import BNO_REPORT_ROTATION_VECTOR
 from adafruit_bno08x.i2c import BNO08X_I2C
 from adafruit_vl53l0x import VL53L0X
-from adafruit_vl6180x import VL6180X
+from sensors.VL6180X import VL6180X
 from digitalio import DigitalInOut
 from serial import Serial
 import RPi.GPIO as GPIO
+from adafruit_extended_bus import ExtendedI2C
 
 from actions import Action
 from maestro.maestro import MaestroController
@@ -64,7 +65,8 @@ class Robot:
         self.__maestroServoController = MaestroController(ttyStr=RobotConstants.servoControllerSerialPort,
                                                           baudRate=RobotConstants.servoControllerBaudRate)
 
-        self.__i2c = board.I2C()
+        self.__i2cBus1 = board.I2C()
+        self.__i2cBus3 = ExtendedI2C(3)
 
         self.__tofSensorPins = []
         self.__tofSensors = {}
@@ -87,23 +89,32 @@ class Robot:
         self.__rightFrontTOFDistanceMovingAverageCalculator = StatisticsUtility\
             .MovingAverage(RobotConstants.tofSensorMovingAverageWindow)
 
-        for (address, pinGPIO, pinBoard, name) in RobotConstants.tofSensorPins:
+        for (address, pinGPIO, bus, name) in RobotConstants.tofSensorPins:
             GPIO.setup(pinGPIO, GPIO.OUT)
             GPIO.output(pinGPIO, False)
-            self.__tofSensorPins.append((pinGPIO, address, name))
+            self.__tofSensorPins.append((pinGPIO, address, bus, name))
 
-        for pin, address, name in self.__tofSensorPins:
+        for pin, address, bus, name in self.__tofSensorPins:
             GPIO.output(pin, True)
 
             if name == "VL53L0X":
-                i2cDevice = VL53L0X(self.__i2c)
-                i2cDevice.set_address(address)
+                if bus == 1:
+                    i2cDevice = VL53L0X(self.__i2cBus1)
+                    i2cDevice.set_address(address)
+                else:
+                    i2cDevice = VL53L0X(self.__i2cBus3)
+                    i2cDevice.set_address(address)
             else:
-                #i2cDevice = VL6180X(self.__i2c)
-                dave = 1
+                if bus == 1:
+                    i2cDevice = VL6180X(self.__i2cBus1)
+                    i2cDevice.set_address(address)
+                else:
+                    i2cDevice = VL6180X(self.__i2cBus3)
+                    i2cDevice.set_address(address)
+
             self.__tofSensors.update((address, i2cDevice))
 
-        self.__lightSensor = AS7341(self.__i2c, address=RobotConstants.lightSensorPins[0])
+        self.__lightSensor = AS7341(self.__i2cBus3, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
         self.__lightSensorLEDOn = False
 
@@ -116,7 +127,7 @@ class Robot:
 
         self.__lightSensorStandardDeviations = RobotConstants.lightSensorNumberOfChannels * [0.0]
 
-        self.__bno085 = BNO08X_I2C(self.__i2c, address=RobotConstants.bno085SensorPins[0])
+        self.__bno085 = BNO08X_I2C(self.__i2cBus3, address=RobotConstants.bno085SensorPins[0])
         self.__bno085.enable_feature(BNO_REPORT_ROTATION_VECTOR)
 
         self.__startButton = DigitalInOut(digitalio.Pin(RobotConstants.redButtonPins[1]))
