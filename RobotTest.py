@@ -1,3 +1,5 @@
+import multiprocessing
+
 from actions.AtomicAction import AtomicAction
 from actions.ParallelAction import ParallelAction
 from actions.PowerButtonLED import PowerButtonLED
@@ -7,6 +9,10 @@ from actions.WaitAction import WaitAction
 from subsystems.Robot import Robot
 
 robot = Robot()
+
+updateThread = multiprocessing.Process(target=robot.updateRobot(), name="Robot Update Thread", daemon=True)
+updateThread.start()
+
 print("post initialize")
 
 robot.runAction(

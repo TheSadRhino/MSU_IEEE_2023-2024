@@ -144,10 +144,6 @@ class Robot:
         self._setupRobot()
         self._startTOFSensorRanging()
 
-        updateThread = multiprocessing.Process(target=self._updateRobot(), name="Robot Update Thread")
-        updateThread.start()
-        updateThread.join()
-
     def runAction(self, action: Action):
         print("Action call")
         action.onStart(self)
@@ -421,7 +417,7 @@ class Robot:
         self.__lightSensor.led_current = self.__lightSensorLEDCurrent
         self.__lightSensor.led = self.__lightSensorLEDOn
 
-    def _updateRobot(self):
+    def updateRobot(self):
         while True:
             self._updateRobotIteration()
 
