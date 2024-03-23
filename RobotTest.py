@@ -10,23 +10,29 @@ from actions.SeriesAction import SeriesAction
 from actions.WaitAction import WaitAction
 from subsystems.Robot import Robot
 
-robot = Robot()
-executor = ThreadPoolExecutor(max_workers=2)
-executor.submit(robot.updateRobot())
+
 #updateThread = threading.Thread(target=robot.updateRobot(), name="Robot Update Thread", daemon=True)
 #updateThread.start()
+robot = Robot()
 
-print("post initialize")
-robot.runAction(
-    SeriesAction(
-        [AtomicAction(
-            [WaitAction(15),
-             PrintButtonPressAction()]
-         ),
-         ParallelAction(
-            [WaitAction(5), PowerButtonLED(True)]
-         )]
+def runActions():
+    print("post initialize")
+    robot.runAction(
+        SeriesAction(
+            [AtomicAction(
+                [WaitAction(15),
+                 PrintButtonPressAction()]
+            ),
+                ParallelAction(
+                [WaitAction(5), PowerButtonLED(True)]
+            )]
+        )
     )
-)
+    robot.runAction(PowerButtonLED(False))
 
-robot.runAction(PowerButtonLED(False))
+
+executor = ThreadPoolExecutor(max_workers=2)
+executor.submit(robot.updateRobot())
+executor.submit(runActions())
+
+
