@@ -38,13 +38,13 @@ GPIO.setmode(GPIO.BCM)
 time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
 xshut = [
-
+    25,
     9
     # add more VL53L0X sensors by defining their SHDN pins here
 ]
 
-GPIO.setup(25, GPIO.OUT)
-GPIO.output(25, False)
+#GPIO.setup(25, GPIO.OUT)
+#GPIO.output(25, False)
 
 for remove in xshut:
     GPIO.setup(remove, GPIO.OUT)
@@ -84,7 +84,7 @@ for i, power_pin in enumerate(xshut):
 #   >>>     i2c.unlock()
 
 
-def detect_range(count=5):
+def detect_range(count=10):
     """take count=5 samples"""
     while count:
         for index, sensor in enumerate(vl53):
