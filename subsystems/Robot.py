@@ -111,7 +111,7 @@ class Robot:
                 else:
                     i2cDevice = VL6180X(self.__i2cBus3)
                     i2cDevice.set_address(address)
-                self.__tofSensors.update((address, i2cDevice))
+                self.__tofSensors.update({address: i2cDevice})
 
         self.__lightSensor = AS7341(self.__i2cBus3, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
