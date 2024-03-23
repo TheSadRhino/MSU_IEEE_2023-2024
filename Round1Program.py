@@ -80,7 +80,7 @@ robot.runAction(
                 WaitAction(0.1),
                 ParallelAction(
                     [SetSideIntakeVelocity(0),
-                     SetDrivetrainVelocity(0.1, -0.1, 0),
+                     SetDrivetrainVelocity(0.1, -0.025, 0),
                      SetFrontIntakeVelocity(0.4)]
                 ),
                 WaitAction(1),
