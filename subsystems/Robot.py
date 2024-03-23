@@ -7,7 +7,6 @@ from adafruit_bno08x import BNO_REPORT_ROTATION_VECTOR
 from adafruit_bno08x.i2c import BNO08X_I2C
 from adafruit_vl53l0x import VL53L0X
 from sensors.VL6180X import VL6180X
-from digitalio import DigitalInOut
 from serial import Serial
 import RPi.GPIO as GPIO
 from adafruit_extended_bus import ExtendedI2C
@@ -98,12 +97,13 @@ class Robot:
             GPIO.output(pin, True)
 
             if name == "VL53L0X":
-                if bus == 1:
-                    i2cDevice = VL53L0X(self.__i2cBus1)
-                    i2cDevice.set_address(address)
-                else:
-                    i2cDevice = VL53L0X(self.__i2cBus3)
-                    i2cDevice.set_address(address)
+                print("We can't handle these, sorry")
+                # if bus == 1:
+                #     i2cDevice = VL53L0X(self.__i2cBus1)
+                #     i2cDevice.set_address(address)
+                # else:
+                #     i2cDevice = VL53L0X(self.__i2cBus3)
+                #     i2cDevice.set_address(address)
             else:
                 if bus == 1:
                     i2cDevice = VL6180X(self.__i2cBus1)
@@ -111,8 +111,7 @@ class Robot:
                 else:
                     i2cDevice = VL6180X(self.__i2cBus3)
                     i2cDevice.set_address(address)
-
-            self.__tofSensors.update((address, i2cDevice))
+                self.__tofSensors.update((address, i2cDevice))
 
         self.__lightSensor = AS7341(self.__i2cBus3, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
@@ -130,10 +129,10 @@ class Robot:
         self.__bno085 = BNO08X_I2C(self.__i2cBus3, address=RobotConstants.bno085SensorPins[0])
         self.__bno085.enable_feature(BNO_REPORT_ROTATION_VECTOR)
 
-        self.__startButton = DigitalInOut(digitalio.Pin(RobotConstants.redButtonPins[1]))
-        self.__startButton.direction = digitalio.Direction.INPUT
-        self.__redLED = DigitalInOut(digitalio.Pin(RobotConstants.redLEDPins[1]))
-        self.__redLED.switch_to_output(value=self.__redLED)
+        GPIO.setup(RobotConstants.redButtonPins[1], GPIO.IN)
+        self.__buttonPressed = GPIO.input(RobotConstants.redButtonPins[1])
+        GPIO.setup(RobotConstants.redLEDPins[1], GPIO.OUT)
+        GPIO.output(RobotConstants.redLEDPins[1], self.__ledOn)
 
         self.__subsystemList = ()
 
