@@ -10,3 +10,4 @@ class SetDrivetrainVelocity(RunOnceAction):
 
     def runOnce(self, robot: Robot = None):
         robot.setNormalizedVelocity(self.__xVelocity, self.__yVelocity, self.__headingVelocity)
+        print(robot.getAngles()[0])

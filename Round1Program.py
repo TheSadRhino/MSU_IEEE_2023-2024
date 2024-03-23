@@ -27,17 +27,17 @@ robot.runAction(
          SetDrivetrainVelocity(0, 0.175, 0),
          WaitForLeftSideDistanceLessThan(150),
          SetDrivetrainVelocity(0, 0, 0),
-         ParallelAction(
-             [DeployIntakesAction(),
-              WaitAction(0.25)]
-         ),
+         DeployIntakesAction(),
          ParallelAction(
              [SetSideIntakeVelocity(0.4),
               SetFrontIntakeVelocity(0.5)]
          ),
-         AtomicAction(
-             [DriveWithGyroHeadingCorrection(0.05, -0.25, 0),
-              WaitAction(1)]
+         SeriesAction(
+             [SetDrivetrainVelocity(0.05, -0.15, 0),
+              WaitAction(1),
+              SetDrivetrainVelocity(0.15, 0.025, 0),
+              WaitAction(0.5),
+              SetDrivetrainVelocity(0, 0, 0)]
          ),
          ParallelAction(
              [SetSideIntakeVelocity(0),
