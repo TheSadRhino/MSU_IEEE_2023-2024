@@ -1,3 +1,4 @@
+import multiprocessing
 import threading
 
 import board
@@ -143,8 +144,8 @@ class Robot:
         self._setupRobot()
         self._startTOFSensorRanging()
 
-        updateThread = threading.Thread(target=self._updateRobot(), name="Robot Update Thread", daemon=True)
-        updateThread.start()
+        updateThread = multiprocessing.Process(target=self._updateRobot(), name="Robot Update Thread")
+        updateThread.run()
 
     def runAction(self, action: Action):
         print("Action call")
