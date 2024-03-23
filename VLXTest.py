@@ -23,6 +23,7 @@ need to wait 400ms, just 200ms for both of the sensors.
 """
 import time
 import board
+import busio
 from digitalio import DigitalInOut
 from sensors.VL53l0X import VL53L0X
 import RPi.GPIO as GPIO
@@ -31,7 +32,7 @@ from sensors.VL6180X import VL6180X
 
 
 # declare the singleton variable for the default I2C bus
-i2c = ExtendedI2C(3)
+i2c = busio.I2C(board.SCL, board.SDA)
 # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
 GPIO.setmode(GPIO.BCM)
@@ -46,13 +47,21 @@ xshut = [
 #GPIO.setup(25, GPIO.OUT)
 #GPIO.output(25, False)
 
-GPIO.setup(9, GPIO.OUT)
-GPIO.output(9, False)
-GPIO.setup(25, GPIO.OUT)
-GPIO.output(25, False)
+GPIO.setup(20, GPIO.OUT)
+GPIO.setup(26, GPIO.OUT)
+GPIO.setup(13, GPIO.OUT)
+GPIO.setup(8, GPIO.OUT)
+GPIO.setup(19, GPIO.OUT)
+GPIO.setup(6, GPIO.OUT)
 
+GPIO.output(20, False)
+GPIO.output(26, False)
+GPIO.output(13, False)
+GPIO.output(8, False)
+GPIO.output(19, False)
+GPIO.output(6, False)
 
-GPIO.output(9, True)
+GPIO.output(6, True)
 vl5 = VL53L0X(i2c)
 vl5.start_continuous()
 vl5.set_address(0x31)
