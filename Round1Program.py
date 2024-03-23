@@ -29,7 +29,7 @@ robot.runAction(
          SetDrivetrainVelocity(0, 0, 0),
          ParallelAction(
              [DeployIntakesAction(),
-              WaitAction(1)]
+              WaitAction(0.25)]
          ),
          ParallelAction(
              [SetSideIntakeVelocity(0.4),

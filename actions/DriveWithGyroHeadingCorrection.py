@@ -16,7 +16,7 @@ class DriveWithGyroHeadingCorrection(Action):
     def update(self):
         yaw, pitch, roll = self.__robot.getAngles()
         self.__robot.setNormalizedVelocity(self.__xVelocity, self.__yVelocity,
-                                           (yaw - self.__heading) * -RobotConstants.driveByGyroAngleErrorConstant)
+                                           (yaw - self.__heading) * RobotConstants.driveByGyroAngleErrorConstant)
 
     def onTermination(self):
         self.__robot.setNormalizedVelocity(0, 0, 0)
@@ -25,4 +25,4 @@ class DriveWithGyroHeadingCorrection(Action):
         self.__robot = robot
         yaw, pitch, roll = self.__robot.getAngles()
         self.__robot.setNormalizedVelocity(self.__xVelocity, self.__yVelocity,
-                                           (yaw - self.__heading) * -RobotConstants.driveByGyroAngleErrorConstant)
+                                           (yaw - self.__heading) * RobotConstants.driveByGyroAngleErrorConstant)
