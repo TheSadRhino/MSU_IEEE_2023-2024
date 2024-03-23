@@ -76,3 +76,6 @@ climberMotorMaximumAcceleration = 111000
 climberMotorMaximumDeceleration = 20000
 climberMotorMaximumVelocity = 500
 
+
+# Proportionality Constants
+driveByGyroAngleErrorConstant = 0.05

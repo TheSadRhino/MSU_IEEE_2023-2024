@@ -177,6 +177,12 @@ class Robot:
         self.__normalizedYVelocity = y
         self.__normalizedHeadingVelocity = heading
 
+    def setNormalizedFrontIntakeVelocity(self, velocity):
+        self.__intakeVelocities[0] = velocity
+
+    def setNormalizedSideIntakeVelocity(self, velocity):
+        self.__intakeVelocities[1] = velocity
+
     def setFrontIntakeNormalizedVelocity(self, speed):
         self.__intakeVelocities[0] = speed
 
