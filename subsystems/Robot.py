@@ -94,7 +94,7 @@ class Robot:
             self.__tofSensorPins.append((pinGPIO, address, bus, name))
 
         for pin, address, bus, name in self.__tofSensorPins:
-            if pin != 26:
+            if pin != 19:
                 GPIO.output(pin, True)
 
             if name == "VL53L0X":
