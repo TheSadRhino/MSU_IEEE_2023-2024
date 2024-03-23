@@ -6,6 +6,7 @@ from actions.DriveWithGyroHeadingCorrection import DriveWithGyroHeadingCorrectio
 from actions.ParallelAction import ParallelAction
 from actions.PowerButtonLED import PowerButtonLED
 from actions.PrintButtonPressAction import PrintButtonPressAction
+from actions.RetractFrontIntakeAction import RetractFrontIntake
 from actions.SeriesAction import SeriesAction
 from actions.SetDrivetrainVelocity import SetDrivetrainVelocity
 from actions.SetFrontIntakeVelocity import SetFrontIntakeVelocity
@@ -19,6 +20,11 @@ from subsystems.Robot import Robot
 time.sleep(15)
 
 robot = Robot()
+
+
+class RetractSideIntake:
+    pass
+
 
 robot.runAction(
     SeriesAction(
@@ -34,15 +40,31 @@ robot.runAction(
          ),
          SeriesAction(
              [SetDrivetrainVelocity(0.05, -0.15, 0),
-              WaitAction(1),
-              SetDrivetrainVelocity(0.15, 0.025, 0),
+              WaitAction(0.8),
+              ParallelAction(
+                  [SetDrivetrainVelocity(-0.05, 0.15, 0),
+                   RetractSideIntake(),
+                   WaitForLeftSideDistanceLessThan(150)]
+              ),
+              SetDrivetrainVelocity(-0.05, -0.05, 0),
+              ParallelAction(
+                  [SetSideIntakeVelocity(0),
+                   WaitAction(0.5)]
+              ),
+              SetDrivetrainVelocity(0.1, 0, 0),
               WaitAction(0.5),
-              SetDrivetrainVelocity(0, 0, 0)]
+              SetDrivetrainVelocity(-0.1, 0, 0),
+              WaitAction(0.5),
+              SetDrivetrainVelocity(0, -0.1, 0),
+              WaitAction(0.5),
+              SetDrivetrainVelocity(0.1, 0, 0)]
          ),
          ParallelAction(
-             [SetSideIntakeVelocity(0),
+             [WaitAction(3),
+              RetractFrontIntake(),
               SetFrontIntakeVelocity(0)]
-         )
+         ),
+         SetDrivetrainVelocity(0, 0, 0)
          ]
     )
 )
