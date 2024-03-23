@@ -439,13 +439,13 @@ class Robot:
 
     def _startTOFSensorRanging(self):
         self._bootAllTOFSensors()
-        for address, device in self.__tofSensors:
+        for address, device in self.__tofSensors.items():
             device.start_continuous()
 
     def _bootAllTOFSensors(self):
-        for pin, address, name in self.__tofSensorPins:
-            pin.value = True
+        for address, pin, bus, name in RobotConstants.functionalTOFSensorPins:
+            GPIO.output(pin, True)
 
     def _shutdownAllTOFSensors(self):
-        for pin, address, name in self.__tofSensorPins:
-            pin.value = False
+        for address, pin, bus, name in RobotConstants.functionalTOFSensorPins:
+            GPIO.output(pin, False)

@@ -12,6 +12,8 @@ rearRightSideTOFSensorPins = (0x36, 9, 3, "VL53L0X")
 tofSensorPins = [frontRightSideTOFSensorPins, frontTOFSensorPins, frontLeftSideTOFSensorPins,
                  middleLeftSideTOFSensorPins, rearLeftSideTOFSensorPins, rearLeftRearTOFSensorPins,
                  rearRightRearTOFSensorPins, rearRightSideTOFSensorPins]
+functionalTOFSensorPins = [rearRightRearTOFSensorPins, frontLeftSideTOFSensorPins]
+
 tofSensorMovingAverageWindow = 3
 
 bno085SensorPins = (0x4A, 0, 3, "BNO085")
