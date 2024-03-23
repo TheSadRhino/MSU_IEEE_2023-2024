@@ -46,41 +46,20 @@ xshut = [
 #GPIO.setup(25, GPIO.OUT)
 #GPIO.output(25, False)
 
-for remove in xshut:
-    GPIO.setup(remove, GPIO.OUT)
-    GPIO.output(remove, False)
+GPIO.setup(9, GPIO.OUT)
+GPIO.output(9, False)
+GPIO.setup(25, GPIO.OUT)
+GPIO.output(25, False)
 
-# initialize a list to be used for the array of VL53L0X sensors
-vl53 = []
+GPIO.output(25, True)
+vl6 = VL6180X(i2c)
+vl6.start_range_continuous()
+vl6.set_address(0x30)
 
-# now change the addresses of the VL53L0X sensors
-for i, power_pin in enumerate(xshut):
-    # turn on the VL53L0X to allow hardware check
-    GPIO.output(power_pin, True)
-    # instantiate the VL53L0X sensor on the I2C bus & insert it into the "vl53" list
-    if power_pin == 9:
-        vl53.insert(i, VL53L0X(i2c))  # also performs VL53L0X hardware check
+GPIO.output(9, True)
+vl5 = VL53L0X(i2c)
+vl5.start_continuous()
 
-    # start continous mode
-        vl53[i].start_continuous()
-
-    # you will see the benefit of continous mode if you set the measurement timing
-    # budget very high.
-    # vl53[i].measurement_timing_budget = 2000000
-
-    # no need to change the address of the last VL53L0X sensor
-        if i < len(xshut) - 1:
-        # default address is 0x29. Change that to something else
-            vl53[i].set_address(i + 0x30)  # address assigned should NOT be already in use
-    else:
-        vl53.insert(i, VL6180X(i2c))
-
-        vl53[i].start_range_continuous()
-
-        if i < len(xshut) - 1:
-        # default address is 0x29. Change that to something else
-            vl53[i].set_address(i + 0x30)
-    time.sleep(0.25)
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
 # https://learn.adafruit.com/i2c-addresses/the-list
 # According to this list 0x30-0x34 are available, although the list may be incomplete.
@@ -96,22 +75,18 @@ for i, power_pin in enumerate(xshut):
 def detect_range(count=10):
     """take count=5 samples"""
     while count:
-        for index, sensor in enumerate(vl53):
-            if isinstance(sensor, VL53L0X):
-                print("Sensor {} Range: {}mm".format(index + 1, sensor.range))
-            else:
-                print("Sensor {} Range: {}mm".format(index + 1, sensor.range))
+        print("Sensor {} Range: {}mm".format(1, vl5.range))
+        print("Sensor {} Range: {}mm".format(2, vl6.range))
 
         time.sleep(1.0)
-        count -= 1
 
 
 def stop_continuous():
     """this is not required, if you use XSHUT to reset the sensor.
     unless if you want to save some energy
     """
-    for sensor in vl53:
-        sensor.stop_continuous()
+    vl6.stop_range_continuous()
+    vl5.stop_continuous()
 
 
 if __name__ == "__main__":
