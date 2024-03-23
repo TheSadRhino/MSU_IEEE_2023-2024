@@ -7,9 +7,9 @@ maestroServoController = MaestroController(ttyStr=RobotConstants.servoController
                                            baudRate=RobotConstants.servoControllerBaudRate)
 
 position = RobotConstants.clawDeploymentServoUpPosition
-maestroServoController.setTarget(5, position, False)
+maestroServoController.setTarget(5, position, True)
 time.sleep(3)
 
 position = RobotConstants.clawDeploymentServoDownPosition
-maestroServoController.setTarget(5, position, False)
+maestroServoController.setTarget(5, position, True)
 time.sleep(3)
