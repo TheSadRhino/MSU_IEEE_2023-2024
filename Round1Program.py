@@ -75,8 +75,8 @@ robot.runAction(
                 SetFrontIntakeVelocity(-0.3),
                 WaitAction(0.05),
                 SetFrontIntakeVelocity(0),
-                TurnForAngle(105, 0.075),
-                SetSideIntakeVelocity(-0.25),
+                TurnForAngle(87.5, 0.075),
+                SetSideIntakeVelocity(-0.2),
                 WaitAction(0.1),
                 ParallelAction(
                     [SetSideIntakeVelocity(0),
@@ -84,15 +84,16 @@ robot.runAction(
                      SetFrontIntakeVelocity(0.4)]
                 ),
                 WaitAction(1),
+
                 ParallelAction(
-                    [SetDrivetrainVelocity(0, 0, 0.05),
+                    [TurnForAngle(75, 0.075),
                      RetractSideIntakeAction(),
                      RetractFrontIntakeAction(),
                      SetFrontIntakeVelocity(0),
                      WaitAction(0.5)]
                 ),
                 SetDrivetrainVelocity(0.75, 0, 0),
-                WaitAction(2),
+                WaitAction(2.25),
                 SetDrivetrainVelocity(0, -0.25, 0),
                 WaitAction(2),
                 SetDrivetrainVelocity(0, 0, 0)
