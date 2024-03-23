@@ -63,7 +63,7 @@ class Robot:
         self.__maestroServoController = MaestroController(ttyStr=RobotConstants.servoControllerSerialPort,
                                                           baudRate=RobotConstants.servoControllerBaudRate)
 
-        self.__i2cBus1 = board.I2C()
+        self.__i2cBus1 = ExtendedI2C(1)
         self.__i2cBus3 = ExtendedI2C(3)
 
         self.__tofSensorPins = []
