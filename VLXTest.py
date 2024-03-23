@@ -58,10 +58,10 @@ vl5.start_continuous()
 vl5.set_address(0x31)
 
 
-GPIO.output(25, True)
-vl6 = VL6180X(i2c)
-vl6.start_range_continuous()
-vl6.set_address(0x30)
+# GPIO.output(25, True)
+# vl6 = VL6180X(i2c)
+# vl6.start_range_continuous()
+# vl6.set_address(0x30)
 
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
 # https://learn.adafruit.com/i2c-addresses/the-list
@@ -79,7 +79,7 @@ def detect_range(count=10):
     """take count=5 samples"""
     while count:
         print("Sensor {} Range: {}mm".format(1, vl5.range))
-        print("Sensor {} Range: {}mm".format(2, vl6.range))
+        #print("Sensor {} Range: {}mm".format(2, vl6.range))
 
         time.sleep(1.0)
 
@@ -88,7 +88,7 @@ def stop_continuous():
     """this is not required, if you use XSHUT to reset the sensor.
     unless if you want to save some energy
     """
-    vl6.stop_range_continuous()
+    #vl6.stop_range_continuous()
     vl5.stop_continuous()
 
 
