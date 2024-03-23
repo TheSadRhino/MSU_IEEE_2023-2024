@@ -24,7 +24,7 @@ robot.runAction(
     SeriesAction(
         [WaitForButtonPress(),
          ZeroGyroValues(),
-         SetDrivetrainVelocity(0, 0.25, 0),
+         SetDrivetrainVelocity(0, 0.175, 0),
          WaitForLeftSideDistanceLessThan(150),
          SetDrivetrainVelocity(0, 0, 0),
          ParallelAction(
