@@ -95,7 +95,7 @@ class Robot:
 
         for pin, address, bus, name in self.__tofSensorPins:
             print(pin)
-            if pin != 19:
+            if pin != 26 and pin != 19:
                 GPIO.output(pin, True)
 
                 if name == "VL53L0X":
@@ -115,7 +115,6 @@ class Robot:
                         i2cDevice.set_address(address)
                     print("success")
                     self.__tofSensors.update({address: i2cDevice})
-
 
         self.__lightSensor = AS7341(self.__i2cBus3, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
