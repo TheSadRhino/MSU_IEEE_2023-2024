@@ -75,7 +75,7 @@ for i, power_pin in enumerate(xshut):
     else:
         vl53.insert(i, VL6180X(i2c))
 
-        vl53[i].start_continuous()
+        vl53[i].start_range_continuous()
 
         if i < len(xshut) - 1:
         # default address is 0x29. Change that to something else
@@ -97,7 +97,11 @@ def detect_range(count=10):
     """take count=5 samples"""
     while count:
         for index, sensor in enumerate(vl53):
-            print("Sensor {} Range: {}mm".format(index + 1, sensor.range))
+            if isinstance(sensor, VL53L0X):
+                print("Sensor {} Range: {}mm".format(index + 1, sensor.range))
+            else:
+                print("Sensor {} Range: {}mm".format(index + 1, sensor.range))
+
         time.sleep(1.0)
         count -= 1
 
