@@ -146,12 +146,15 @@ class Robot:
 
     def runAction(self, action: Action):
         print("Action call")
+        self._updateRobotIteration()
         action.onStart(self)
 
         while not action.isFinished():
             action.update()
+            self._updateRobotIteration()
 
         action.onTermination()
+        self._updateRobotIteration()
 
     def setYawOffset(self, angle):
         self.__yawOffset = angle

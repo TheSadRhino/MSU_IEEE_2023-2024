@@ -16,8 +16,6 @@ from subsystems.Robot import Robot
 #updateThread.start()
 robot = Robot()
 
-asyncio.run(robot.updateRobot())
-
 
 def runActions():
     print("post initialize")
