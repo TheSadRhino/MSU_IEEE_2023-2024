@@ -1,6 +1,7 @@
 import threading
 
 import board
+import busio
 import digitalio
 from adafruit_as7341 import AS7341
 from adafruit_bno08x import BNO_REPORT_ROTATION_VECTOR
@@ -63,7 +64,7 @@ class Robot:
         self.__maestroServoController = MaestroController(ttyStr=RobotConstants.servoControllerSerialPort,
                                                           baudRate=RobotConstants.servoControllerBaudRate)
 
-        self.__i2cBus1 = ExtendedI2C(1)
+        self.__i2cBus1 = busio.I2C(board.SCL, board.SDA)
         self.__i2cBus3 = ExtendedI2C(3)
 
         self.__tofSensorPins = []
