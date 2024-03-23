@@ -58,7 +58,7 @@ for i, power_pin in enumerate(xshut):
     # turn on the VL53L0X to allow hardware check
     GPIO.output(power_pin, True)
     # instantiate the VL53L0X sensor on the I2C bus & insert it into the "vl53" list
-    if power_pin == 25:
+    if power_pin == 9:
         vl53.insert(i, VL53L0X(i2c))  # also performs VL53L0X hardware check
 
     # start continous mode
