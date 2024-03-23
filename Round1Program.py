@@ -2,6 +2,7 @@ import time
 
 from actions.AtomicAction import AtomicAction
 from actions.DeployIntakesAction import DeployIntakesAction
+from actions.DriveUntilPitchGreaterThan import DriveUntilPitchGreaterThan
 from actions.DriveWithGyroHeadingCorrection import DriveWithGyroHeadingCorrection
 from actions.ParallelAction import ParallelAction
 from actions.PowerButtonLED import PowerButtonLED
@@ -53,15 +54,11 @@ robot.runAction(
          WaitAction(0.75),
          SetDrivetrainVelocity(0, -0.175, 0),
          WaitAction(0.25),
-         SetDrivetrainVelocity(0.175, 0, 0),
-         WaitAction(0.75),
-
+         DriveUntilPitchGreaterThan(0.175, 0, 8),
          ParallelAction(
-             [WaitAction(3),
-              RetractFrontIntakeAction(),
+             [RetractFrontIntakeAction(),
               SetFrontIntakeVelocity(0)]
-         ),
-         SetDrivetrainVelocity(0, 0, 0)
+         )
          ]
     )
 )
