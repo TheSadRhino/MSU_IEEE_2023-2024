@@ -72,7 +72,7 @@ robot.runAction(
          SetFrontIntakeVelocity(-0.3),
          WaitAction(0.05),
          SetFrontIntakeVelocity(0),
-         TurnForNegativeAngle(-100, 0.075),
+         TurnForNegativeAngle(-110, 0.075),
          SetSideIntakeVelocity(-0.25),
          WaitAction(0.1),
          SetSideIntakeVelocity(0)
