@@ -151,7 +151,7 @@ class VL53L0X:
     # Is VL53L0X is currently continuous mode? (Needed by `range` property)
     _continuous_mode = False
 
-    def __init__(self, i2c: I2C, address: int = 41, io_timeout_s: float = 0) -> None:
+    def __init__(self, i2c: I2C, address: int = 0x29, io_timeout_s: float = 0) -> None:
         # pylint: disable=too-many-statements
         self._i2c = i2c
         self._device = i2c_device.I2CDevice(i2c, address)
@@ -159,14 +159,14 @@ class VL53L0X:
         self._data_ready = False
         # Check identification registers for expected values.
         # From section 3.2 of the datasheet.
-        if (
-            self._read_u8(0xC0) != 0xEE
-            or self._read_u8(0xC1) != 0xAA
-            or self._read_u8(0xC2) != 0x10
-        ):
-            raise RuntimeError(
-                "Failed to find expected ID register values. Check wiring!"
-            )
+        # if (
+        #     self._read_u8(0xC0) != 0xEE
+        #     or self._read_u8(0xC1) != 0xAA
+        #     or self._read_u8(0xC2) != 0x10
+        # ):
+        #     raise RuntimeError(
+        #         "Failed to find expected ID register values. Check wiring!"
+        #     )
         # Initialize access to the sensor.  This is based on the logic from:
         #   https://github.com/pololu/vl53l0x-arduino/blob/master/VL53L0X.cpp
         # Set I2C standard mode.
