@@ -31,7 +31,7 @@ robot.runAction(
         [WaitForButtonPress(),
          ZeroGyroValues(),
          SetDrivetrainVelocity(0, 0, 0.075),
-         WaitAction(0.75),
+         WaitAction(0.85),
          SetDrivetrainVelocity(0, 0, 0)
          ]
     ))
