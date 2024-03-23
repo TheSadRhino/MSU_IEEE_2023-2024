@@ -1,3 +1,4 @@
+import asyncio
 import multiprocessing
 import threading
 from concurrent.futures import ThreadPoolExecutor
@@ -15,6 +16,9 @@ from subsystems.Robot import Robot
 #updateThread.start()
 robot = Robot()
 
+asyncio.run(robot.updateRobot())
+
+
 def runActions():
     print("post initialize")
     robot.runAction(
@@ -31,8 +35,7 @@ def runActions():
     robot.runAction(PowerButtonLED(False))
 
 
-executor = ThreadPoolExecutor(max_workers=2)
-executor.submit(robot.updateRobot())
-executor.submit(runActions())
+runActions()
+
 
 
