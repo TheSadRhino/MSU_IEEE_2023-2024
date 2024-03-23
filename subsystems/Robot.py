@@ -320,17 +320,17 @@ class Robot:
         self.__630nm = self.__lightSensorChannels[6]
         self.__680nm = self.__lightSensorChannels[7]
 
-        for address, device in self.__tofSensors:
+        for address, device in self.__tofSensors.items():
             self.__tofDistances.update((address, device.range))
 
-        self.__frontTOFDistance = self.__tofDistances.get(RobotConstants.frontTOFSensorPins[0])
+        #self.__frontTOFDistance = self.__tofDistances.get(RobotConstants.frontTOFSensorPins[0])
         self.__leftFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontLeftSideTOFSensorPins[0])
-        self.__leftMiddleTOFDistance = self.__tofDistances.get(RobotConstants.middleLeftSideTOFSensorPins[0])
-        self.__leftRearTOFDistance = self.__tofDistances.get(RobotConstants.rearLeftSideTOFSensorPins[0])
-        self.__rearLeftTOFDistance = self.__tofDistances.get(RobotConstants.rearLeftRearTOFSensorPins[0])
+        #self.__leftMiddleTOFDistance = self.__tofDistances.get(RobotConstants.middleLeftSideTOFSensorPins[0])
+        #self.__leftRearTOFDistance = self.__tofDistances.get(RobotConstants.rearLeftSideTOFSensorPins[0])
+        #self.__rearLeftTOFDistance = self.__tofDistances.get(RobotConstants.rearLeftRearTOFSensorPins[0])
         self.__rearRightTOFDistance = self.__tofDistances.get(RobotConstants.rearRightRearTOFSensorPins[0])
-        self.__rightRearTOFDistance = self.__tofDistances.get(RobotConstants.rearRightSideTOFSensorPins[0])
-        self.__rightFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontRightSideTOFSensorPins[0])
+        #self.__rightRearTOFDistance = self.__tofDistances.get(RobotConstants.rearRightSideTOFSensorPins[0])
+        #self.__rightFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontRightSideTOFSensorPins[0])
 
         amperageSuccess, self.__frontIntakeAmperage, self.__sideIntakeAmperage = self.__roboclawSystem.read_currents(
             RobotConstants.intakeMotorControllerAddress)
@@ -369,22 +369,22 @@ class Robot:
             self.__lightSensorStandardDeviations[i] = self.__lightSensorStandardDeviationCalculators[i]\
                 .addDataPointAndCalculateStandardDeviation(self.__lightSensorChannels[i])
 
-        self.__frontTOFDistanceMovingAverage = self.__frontTOFDistanceMovingAverageCalculator\
-            .addDataPointAndCalculateAverage(self.__frontTOFDistance)
+        # self.__frontTOFDistanceMovingAverage = self.__frontTOFDistanceMovingAverageCalculator\
+        #     .addDataPointAndCalculateAverage(self.__frontTOFDistance)
         self.__leftFrontTOFDistanceMovingAverage = self.__leftFrontTOFDistanceMovingAverageCalculator\
             .addDataPointAndCalculateAverage(self.__leftFrontTOFDistance)
-        self.__leftMiddleTOFDistanceMovingAverage = self.__leftMiddleTOFDistanceMovingAverageCalculator\
-            .addDataPointAndCalculateAverage(self.__leftMiddleTOFDistance)
-        self.__leftRearTOFDistanceMovingAverage = self.__leftRearTOFDistanceMovingAverageCalculator\
-            .addDataPointAndCalculateAverage(self.__leftRearTOFDistance)
-        self.__rearLeftTOFDistanceMovingAverage = self.__rearLeftTOFDistanceMovingAverageCalculator\
-            .addDataPointAndCalculateAverage(self.__rearLeftTOFDistance)
+        # self.__leftMiddleTOFDistanceMovingAverage = self.__leftMiddleTOFDistanceMovingAverageCalculator\
+        #     .addDataPointAndCalculateAverage(self.__leftMiddleTOFDistance)
+        # self.__leftRearTOFDistanceMovingAverage = self.__leftRearTOFDistanceMovingAverageCalculator\
+        #     .addDataPointAndCalculateAverage(self.__leftRearTOFDistance)
+        # self.__rearLeftTOFDistanceMovingAverage = self.__rearLeftTOFDistanceMovingAverageCalculator\
+        #     .addDataPointAndCalculateAverage(self.__rearLeftTOFDistance)
         self.__rearRightTOFDistanceMovingAverage = self.__rearRightTOFDistanceMovingAverageCalculator\
             .addDataPointAndCalculateAverage(self.__rearRightTOFDistance)
-        self.__rightRearTOFDistanceMovingAverage = self.__rightRearTOFDistanceMovingAverageCalculator\
-            .addDataPointAndCalculateAverage(self.__rightRearTOFDistance)
-        self.__rightFrontTOFDistanceMovingAverage = self.__rightFrontTOFDistanceMovingAverageCalculator\
-            .addDataPointAndCalculateAverage(self.__rightFrontTOFDistance)
+        # self.__rightRearTOFDistanceMovingAverage = self.__rightRearTOFDistanceMovingAverageCalculator\
+        #     .addDataPointAndCalculateAverage(self.__rightRearTOFDistance)
+        # self.__rightFrontTOFDistanceMovingAverage = self.__rightFrontTOFDistanceMovingAverageCalculator\
+        #     .addDataPointAndCalculateAverage(self.__rightFrontTOFDistance)
 
         self.__averageFrontIntakeAmperage = self.__frontIntakeAmperageMovingAverageCalculator \
             .addDataAndCalculateAverage(self.__frontIntakeAmperage)
