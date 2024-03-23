@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from subsystems.Robot import Robot
+from subsystems import Robot
 
 
 class Action(ABC):
