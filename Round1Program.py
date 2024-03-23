@@ -1,3 +1,5 @@
+import time
+
 from actions.AtomicAction import AtomicAction
 from actions.DeployIntakesAction import DeployIntakesAction
 from actions.DriveWithGyroHeadingCorrection import DriveWithGyroHeadingCorrection
@@ -11,6 +13,8 @@ from actions.WaitAction import WaitAction
 from actions.WaitForButtonPress import WaitForButtonPress
 from actions.ZeroGyroValues import ZeroGyroValues
 from subsystems.Robot import Robot
+
+time.sleep(15)
 
 robot = Robot()
 
