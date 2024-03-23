@@ -14,6 +14,7 @@ from actions.SetDrivetrainVelocity import SetDrivetrainVelocity
 from actions.SetFrontIntakeVelocity import SetFrontIntakeVelocity
 from actions.SetSideIntakeVelocity import SetSideIntakeVelocity
 from actions.TurnForAngle import TurnForAngle
+from actions.TurnForNegativeAngle import TurnForNegativeAngle
 from actions.WaitAction import WaitAction
 from actions.WaitForButtonPress import WaitForButtonPress
 from actions.WaitForLeftSideDistanceLessThan import WaitForLeftSideDistanceLessThan
@@ -63,14 +64,16 @@ robot.runAction(
          ),
          SetDrivetrainVelocity(0, -0.175, 0),
          WaitAction(0.25),
-         SetDrivetrainVelocity(-0.05, 0.05, -0.05),
-         WaitAction(0.125),
-         DeployIntakesAction(),
-         SetFrontIntakeVelocity(-0.5),
-         WaitAction(0.1),
+         SetDrivetrainVelocity(-0.05, 0.04, -0.025),
+         ParallelAction(
+             [WaitAction(0.125),
+              DeployIntakesAction()]
+         ),
+         SetFrontIntakeVelocity(-0.3),
+         WaitAction(0.05),
          SetFrontIntakeVelocity(0),
-         TurnForAngle(-30, 0.075),
-         SetSideIntakeVelocity(-0.4),
+         TurnForNegativeAngle(-100, 0.075),
+         SetSideIntakeVelocity(-0.25),
          WaitAction(0.1),
          SetSideIntakeVelocity(0)
          ]
