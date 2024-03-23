@@ -423,6 +423,7 @@ class Robot:
             self._updateRobotIteration()
 
     def _updateRobotIteration(self):
+        print("iteration")
         for subsystem in self.__subsystemList:
             subsystem.readInput()
         self._readInput()
