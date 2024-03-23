@@ -57,7 +57,7 @@ vl6.start_range_continuous()
 vl6.set_address(0x30)
 
 GPIO.output(9, True)
-vl5 = VL53L0X(i2c)
+vl5 = VL53L0X(i2c, 0x29)
 vl5.start_continuous()
 
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
