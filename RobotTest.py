@@ -11,11 +11,11 @@ from subsystems.Robot import Robot
 
 robot = Robot()
 
-updateThread = threading.Thread(target=robot.updateRobot(), name="Robot Update Thread", daemon=True)
-updateThread.start()
+#updateThread = threading.Thread(target=robot.updateRobot(), name="Robot Update Thread", daemon=True)
+#updateThread.start()
 
 print("post initialize")
-
+robot.updateRobot()
 robot.runAction(
     SeriesAction(
         [AtomicAction(
@@ -28,4 +28,5 @@ robot.runAction(
     )
 )
 
+robot.updateRobot()
 robot.runAction(PowerButtonLED(False))
