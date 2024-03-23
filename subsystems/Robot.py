@@ -5,7 +5,6 @@ import digitalio
 from adafruit_as7341 import AS7341
 from adafruit_bno08x import BNO_REPORT_ROTATION_VECTOR
 from adafruit_bno08x.i2c import BNO08X_I2C
-from adafruit_vl53l0x import VL53L0X
 from sensors.VL6180X import VL6180X
 from serial import Serial
 import RPi.GPIO as GPIO
