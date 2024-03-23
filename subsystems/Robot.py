@@ -115,6 +115,7 @@ class Robot:
                         i2cDevice.set_address(address)
                     print("success")
                     self.__tofSensors.update({address: i2cDevice})
+                    self.__tofDistances.update({address: 255})
 
         self.__lightSensor = AS7341(self.__i2cBus3, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
@@ -321,7 +322,7 @@ class Robot:
         self.__680nm = self.__lightSensorChannels[7]
 
         for address, device in self.__tofSensors.items():
-            self.__tofDistances.update((address, device.range))
+            self.__tofDistances[address] = device.range
 
         #self.__frontTOFDistance = self.__tofDistances.get(RobotConstants.frontTOFSensorPins[0])
         self.__leftFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontLeftSideTOFSensorPins[0])
