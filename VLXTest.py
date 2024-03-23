@@ -67,7 +67,7 @@ GPIO.output(6, False)
 # vl5.set_address(0x31)
 
 
-GPIO.output(13, True)
+GPIO.output(26, True)
 vl6 = VL6180X(i2c)
 vl6.start_continuous()
 vl6.set_address(0x30)
