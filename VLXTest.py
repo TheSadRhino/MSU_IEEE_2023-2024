@@ -61,7 +61,7 @@ GPIO.output(8, False)
 GPIO.output(19, False)
 GPIO.output(6, False)
 
-GPIO.output(20, True)
+GPIO.output(8, True)
 vl5 = VL53L0X(i2c)
 vl5.start_continuous()
 vl5.set_address(0x31)
