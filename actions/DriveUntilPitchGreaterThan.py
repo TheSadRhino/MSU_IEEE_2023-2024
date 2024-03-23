@@ -13,7 +13,7 @@ class DriveUntilPitchGreaterThan(Action):
     def isFinished(self):
         yaw, pitch, roll = self.__robot.getAngles()
 
-        return pitch > self.__pitch
+        return yaw > self.__pitch
 
     def update(self):
         pass

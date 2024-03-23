@@ -52,13 +52,15 @@ robot.runAction(
          WaitAction(0.75),
          SetDrivetrainVelocity(-0.175, 0, 0),
          WaitAction(0.75),
-         SetDrivetrainVelocity(0, -0.175, 0),
+         SetDrivetrainVelocity(0, -0.85, 0),
          WaitAction(0.25),
-         DriveUntilPitchGreaterThan(0.175, 0, 8),
+         SetDrivetrainVelocity(0.175, 0, 0),
          ParallelAction(
-             [RetractFrontIntakeAction(),
+             [WaitAction(3),
+              RetractFrontIntakeAction(),
               SetFrontIntakeVelocity(0)]
-         )
+         ),
+         SetDrivetrainVelocity(0, 0, 0)
          ]
     )
 )
