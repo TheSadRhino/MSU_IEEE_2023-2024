@@ -11,4 +11,4 @@ while True:
     robot._updateSystem()
 
     yaw, pitch, roll = robot.getAngles()
-    print("Yaw: " + yaw + " | Pitch: " + pitch + " | Roll: " + roll)
+    print(f"Yaw: %.2f | Pitch %.2f | Roll %.2f", (yaw, pitch, roll))
