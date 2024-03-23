@@ -101,9 +101,9 @@ robot.runAction(
               ),
               WaitForButtonPress()]
         ),
-        SetDrivetrainVelocity(0, 0, 0)
-        SetFrontIntakeVelocity(0),
-        SetSideIntakeVelocity(0)]
+         SetDrivetrainVelocity(0, 0, 0),
+         SetFrontIntakeVelocity(0),
+         SetSideIntakeVelocity(0)]
     ))
 
 
