@@ -50,8 +50,8 @@ boosterAlignmentServoUpPosition = 2055
 boosterAlignmentServoDownPosition = 825
 
 clawDeploymentServoPin = 5
-clawDeploymentServoUpPosition = 2175
-clawDeploymentServoDownPosition = 790
+clawDeploymentServoDownPosition = 2175
+clawDeploymentServoUpPosition = 790
 
 # --Motors--
 motorControllerSerialPort = "/dev/ttyAMA3"
