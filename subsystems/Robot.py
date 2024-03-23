@@ -94,25 +94,25 @@ class Robot:
             self.__tofSensorPins.append((pinGPIO, address, bus, name))
 
         for pin, address, bus, name in self.__tofSensorPins:
-            if pin != 19:
+            if pin != 26:
                 GPIO.output(pin, True)
 
-            if name == "VL53L0X":
-                print("We can't handle these, sorry")
+                if name == "VL53L0X":
+                    print("We can't handle these, sorry")
                 # if bus == 1:
                 #     i2cDevice = VL53L0X(self.__i2cBus1)
                 #     i2cDevice.set_address(address)
                 # else:
                 #     i2cDevice = VL53L0X(self.__i2cBus3)
                 #     i2cDevice.set_address(address)
-            else:
-                if bus == 1:
-                    i2cDevice = VL6180X(self.__i2cBus1)
-                    i2cDevice.set_address(address)
                 else:
-                    i2cDevice = VL6180X(self.__i2cBus3)
-                    i2cDevice.set_address(address)
-                self.__tofSensors.update({address: i2cDevice})
+                    if bus == 1:
+                        i2cDevice = VL6180X(self.__i2cBus1)
+                        i2cDevice.set_address(address)
+                    else:
+                        i2cDevice = VL6180X(self.__i2cBus3)
+                        i2cDevice.set_address(address)
+                    self.__tofSensors.update({address: i2cDevice})
 
         self.__lightSensor = AS7341(self.__i2cBus3, address=RobotConstants.lightSensorPins[0])
         self.__lightSensorLEDCurrent = 0
