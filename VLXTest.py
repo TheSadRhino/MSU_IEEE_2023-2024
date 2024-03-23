@@ -67,9 +67,9 @@ GPIO.output(6, False)
 # vl5.set_address(0x31)
 
 
-GPIO.output(19, True)
+GPIO.output(13, True)
 vl6 = VL6180X(i2c)
-vl6.start_range_continuous()
+vl6.start_continuous()
 vl6.set_address(0x30)
 
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
@@ -97,7 +97,7 @@ def stop_continuous():
     """this is not required, if you use XSHUT to reset the sensor.
     unless if you want to save some energy
     """
-    vl6.stop_range_continuous()
+    vl6.stop_continuous()
     #vl5.stop_continuous()
 
 
