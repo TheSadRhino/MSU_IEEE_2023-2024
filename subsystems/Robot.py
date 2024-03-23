@@ -145,7 +145,6 @@ class Robot:
         self._startTOFSensorRanging()
 
     def runAction(self, action: Action):
-        print("Action call")
         self._updateRobotIteration()
         action.onStart(self)
 
@@ -425,7 +424,6 @@ class Robot:
             self._updateRobotIteration()
 
     def _updateRobotIteration(self):
-        print("iteration")
         for subsystem in self.__subsystemList:
             subsystem.readInput()
         self._readInput()
