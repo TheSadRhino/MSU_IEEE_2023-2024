@@ -167,7 +167,7 @@ class VL6180X:
 
         return True
 
-    def start_range_continuous(self, period: int = 100) -> None:
+    def start_continuous(self, period: int = 100) -> None:
         """Start continuous range mode
 
         :param int period: Time delay between measurements, in milliseconds; the value you
@@ -186,7 +186,7 @@ class VL6180X:
         # Start continuous range measurement
         self._write_8(_VL6180X_REG_SYSRANGE_START, 0x03)
 
-    def stop_range_continuous(self) -> None:
+    def stop_continuous(self) -> None:
         """Stop continuous range mode. It is advised to wait for about 0.3s
         afterwards to avoid issues with the interrupt flags"""
         if self.continuous_mode_enabled:
