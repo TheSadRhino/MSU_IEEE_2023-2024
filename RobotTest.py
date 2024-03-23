@@ -11,7 +11,7 @@ from actions.WaitAction import WaitAction
 from subsystems.Robot import Robot
 
 robot = Robot()
-executor = ThreadPoolExecutor(max_workers=1)
+executor = ThreadPoolExecutor(max_workers=2)
 executor.submit(robot.updateRobot())
 #updateThread = threading.Thread(target=robot.updateRobot(), name="Robot Update Thread", daemon=True)
 #updateThread.start()
