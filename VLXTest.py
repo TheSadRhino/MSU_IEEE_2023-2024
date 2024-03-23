@@ -24,7 +24,7 @@ need to wait 400ms, just 200ms for both of the sensors.
 import time
 import board
 from digitalio import DigitalInOut
-from adafruit_vl53l0x import VL53L0X
+from sensors.VL53l0X import VL53L0X
 import RPi.GPIO as GPIO
 from adafruit_extended_bus import ExtendedI2C
 from sensors.VL6180X import VL6180X
@@ -51,14 +51,17 @@ GPIO.output(9, False)
 GPIO.setup(25, GPIO.OUT)
 GPIO.output(25, False)
 
+
+GPIO.output(9, True)
+vl5 = VL53L0X(i2c)
+vl5.start_continuous()
+vl5.set_address(0x31)
+
+
 GPIO.output(25, True)
 vl6 = VL6180X(i2c)
 vl6.start_range_continuous()
 vl6.set_address(0x30)
-
-GPIO.output(9, True)
-vl5 = VL53L0X(i2c, 0x29)
-vl5.start_continuous()
 
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
 # https://learn.adafruit.com/i2c-addresses/the-list
