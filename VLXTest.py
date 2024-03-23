@@ -38,8 +38,8 @@ GPIO.setmode(GPIO.BCM)
 
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
 xshut = [
-    25,
-    9
+    9,
+    25
     # add more VL53L0X sensors by defining their SHDN pins here
 ]
 
