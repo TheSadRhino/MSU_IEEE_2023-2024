@@ -315,36 +315,73 @@ class VL53L0X:
         # "restore the previous Sequence Config"
         self._write_u8(_SYSTEM_SEQUENCE_CONFIG, 0xE8)
 
-    def _read_u8(self, address: int) -> int:
-        # Read an 8-bit unsigned value from the specified 8-bit address.
+    def _write_u8(self, address: int, data: int) -> None:
+        # Write 1 byte of data from the specified 16-bit register address.
         with self._device:
-            self._BUFFER[0] = address & 0xFF
-            self._device.write(self._BUFFER, end=1)
-            self._device.readinto(self._BUFFER, end=1)
-        return self._BUFFER[0]
+            self._device.write(bytes([(address >> 8) & 0xFF, address & 0xFF, data]))
+
+    def _write_u16(self, address: int, data: int) -> None:
+        # Write a 16-bit big endian value to the specified 16-bit register
+        # address.
+        with self._device as i2c:
+            i2c.write(
+                bytes(
+                    [
+                        (address >> 8) & 0xFF,
+                        address & 0xFF,
+                        (data >> 8) & 0xFF,
+                        data & 0xFF,
+                    ]
+                )
+            )
+
+    def _read_u8(self, address: int) -> int:
+        # Read and return a byte from the specified 16-bit register address.
+        with self._device as i2c:
+            result = bytearray(1)
+            i2c.write(bytes([(address >> 8) & 0xFF, address & 0xFF]))
+            i2c.readinto(result)
+            return result[0]
 
     def _read_u16(self, address: int) -> int:
-        # Read a 16-bit BE unsigned value from the specified 8-bit address.
-        with self._device:
-            self._BUFFER[0] = address & 0xFF
-            self._device.write(self._BUFFER, end=1)
-            self._device.readinto(self._BUFFER)
-        return (self._BUFFER[0] << 8) | self._BUFFER[1]
+        # Read and return a 16-bit unsigned big endian value read from the
+        # specified 16-bit register address.
+        with self._device as i2c:
+            result = bytearray(2)
+            i2c.write(bytes([(address >> 8) & 0xFF, address & 0xFF]))
+            i2c.readinto(result)
+            return (result[0] << 8) | result[1]
 
-    def _write_u8(self, address: int, val: int) -> None:
-        # Write an 8-bit unsigned value to the specified 8-bit address.
-        with self._device:
-            self._BUFFER[0] = address & 0xFF
-            self._BUFFER[1] = val & 0xFF
-            self._device.write(self._BUFFER, end=2)
-
-    def _write_u16(self, address: int, val: int) -> None:
-        # Write a 16-bit BE unsigned value to the specified 8-bit address.
-        with self._device:
-            self._BUFFER[0] = address & 0xFF
-            self._BUFFER[1] = (val >> 8) & 0xFF
-            self._BUFFER[2] = val & 0xFF
-            self._device.write(self._BUFFER)
+    # def _read_u8(self, address: int) -> int:
+    #     # Read an 8-bit unsigned value from the specified 8-bit address.
+    #     with self._device:
+    #         self._BUFFER[0] = address & 0xFF
+    #         self._device.write(self._BUFFER, end=1)
+    #         self._device.readinto(self._BUFFER, end=1)
+    #     return self._BUFFER[0]
+    #
+    # def _read_u16(self, address: int) -> int:
+    #     # Read a 16-bit BE unsigned value from the specified 8-bit address.
+    #     with self._device:
+    #         self._BUFFER[0] = address & 0xFF
+    #         self._device.write(self._BUFFER, end=1)
+    #         self._device.readinto(self._BUFFER)
+    #     return (self._BUFFER[0] << 8) | self._BUFFER[1]
+    #
+    # def _write_u8(self, address: int, val: int) -> None:
+    #     # Write an 8-bit unsigned value to the specified 8-bit address.
+    #     with self._device:
+    #         self._BUFFER[0] = address & 0xFF
+    #         self._BUFFER[1] = val & 0xFF
+    #         self._device.write(self._BUFFER, end=2)
+    #
+    # def _write_u16(self, address: int, val: int) -> None:
+    #     # Write a 16-bit BE unsigned value to the specified 8-bit address.
+    #     with self._device:
+    #         self._BUFFER[0] = address & 0xFF
+    #         self._BUFFER[1] = (val >> 8) & 0xFF
+    #         self._BUFFER[2] = val & 0xFF
+    #         self._device.write(self._BUFFER)
 
     def _get_spad_info(self) -> Tuple[int, bool]:
         # Get reference SPAD count and type, returned as a 2-tuple of
