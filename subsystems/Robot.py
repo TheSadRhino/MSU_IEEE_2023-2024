@@ -333,8 +333,8 @@ class Robot:
         #self.__rightRearTOFDistance = self.__tofDistances.get(RobotConstants.rearRightSideTOFSensorPins[0])
         #self.__rightFrontTOFDistance = self.__tofDistances.get(RobotConstants.frontRightSideTOFSensorPins[0])
 
-        amperageSuccess, self.__frontIntakeAmperage, self.__sideIntakeAmperage = self.__roboclawSystem.read_currents(
-            RobotConstants.intakeMotorControllerAddress)
+        # amperageSuccess, self.__frontIntakeAmperage, self.__sideIntakeAmperage = self.__roboclawSystem.read_currents(
+        #     RobotConstants.intakeMotorControllerAddress)
 
     def _updateSystem(self):
         if self.__desiredClimberPosition != self.__lastDesiredClimberPosition:
@@ -387,10 +387,10 @@ class Robot:
         # self.__rightFrontTOFDistanceMovingAverage = self.__rightFrontTOFDistanceMovingAverageCalculator\
         #     .addDataPointAndCalculateAverage(self.__rightFrontTOFDistance)
 
-        self.__averageFrontIntakeAmperage = self.__frontIntakeAmperageMovingAverageCalculator \
-            .addDataAndCalculateAverage(self.__frontIntakeAmperage)
-        self.__averageSideIntakeAmperage = self.__sideIntakeAmperageMovingAverageCalculator \
-            .addDataAndCalculateAverage(self.__sideIntakeAmperage)
+        # self.__averageFrontIntakeAmperage = self.__frontIntakeAmperageMovingAverageCalculator \
+        #     .addDataAndCalculateAverage(self.__frontIntakeAmperage)
+        # self.__averageSideIntakeAmperage = self.__sideIntakeAmperageMovingAverageCalculator \
+        #     .addDataAndCalculateAverage(self.__sideIntakeAmperage)
 
     def _writeOutput(self):
         for i in range(0, 6):
