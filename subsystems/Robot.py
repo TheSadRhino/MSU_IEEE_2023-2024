@@ -360,7 +360,8 @@ class Robot:
         self.__normalizedWheelVelocities[3] = (self.__normalizedXVelocity + self.__normalizedYVelocity +
                                                self.__normalizedHeadingVelocity)
 
-        maximum = max((self.__normalizedWheelVelocities, 1.0))
+        maximum = max((self.__normalizedWheelVelocities[0], self.__normalizedWheelVelocities[1],
+                       self.__normalizedWheelVelocities[2], self.__normalizedWheelVelocities[3], 1.0))
         for i in range(0, len(self.__normalizedWheelVelocities)):
             self.__normalizedWheelVelocities[i] /= maximum
             self.__wheelVelocities[i] = int(self.__normalizedWheelVelocities * RobotConstants
