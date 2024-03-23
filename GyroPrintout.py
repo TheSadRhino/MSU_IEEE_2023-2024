@@ -1,6 +1,8 @@
 from subsystems.Robot import Robot
 
 robot = Robot()
+robot._readInput()
+
 robot.zeroAngles()
 
 while True:
