@@ -2,7 +2,7 @@ from actions.RunOnceAction import RunOnceAction
 from subsystems.Robot import Robot
 
 
-class RetractFrontIntake(RunOnceAction):
+class RetractFrontIntakeAction(RunOnceAction):
 
     def runOnce(self, robot: Robot = None):
         robot.raiseFrontIntake()
