@@ -147,6 +147,7 @@ class Robot:
         updateThread.start()
 
     def runAction(self, action: Action):
+        print("Action call")
         action.onStart(self)
 
         while not action.isFinished():

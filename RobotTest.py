@@ -7,6 +7,7 @@ from actions.WaitAction import WaitAction
 from subsystems.Robot import Robot
 
 robot = Robot()
+print("post initialize")
 
 robot.runAction(
     SeriesAction(
