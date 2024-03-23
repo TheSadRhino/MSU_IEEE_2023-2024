@@ -7,10 +7,12 @@ from actions.ParallelAction import ParallelAction
 from actions.PowerButtonLED import PowerButtonLED
 from actions.PrintButtonPressAction import PrintButtonPressAction
 from actions.SeriesAction import SeriesAction
+from actions.SetDrivetrainVelocity import SetDrivetrainVelocity
 from actions.SetFrontIntakeVelocity import SetFrontIntakeVelocity
 from actions.SetSideIntakeVelocity import SetSideIntakeVelocity
 from actions.WaitAction import WaitAction
 from actions.WaitForButtonPress import WaitForButtonPress
+from actions.WaitForLeftSideDistanceLessThan import WaitForLeftSideDistanceLessThan
 from actions.ZeroGyroValues import ZeroGyroValues
 from subsystems.Robot import Robot
 
@@ -21,9 +23,12 @@ robot = Robot()
 robot.runAction(
     SeriesAction(
         [WaitForButtonPress(),
+         ZeroGyroValues(),
+         SetDrivetrainVelocity(0, 0.1, 0),
+         WaitForLeftSideDistanceLessThan(150),
+         SetDrivetrainVelocity(0, 0, 0),
          ParallelAction(
-             [ZeroGyroValues(),
-              DeployIntakesAction(),
+             [DeployIntakesAction(),
               WaitAction(1)]
          ),
          SetSideIntakeVelocity(0.2),

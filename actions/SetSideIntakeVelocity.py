@@ -7,4 +7,4 @@ class SetSideIntakeVelocity(RunOnceAction):
         self.__velocity = velocity
 
     def runOnce(self, robot: Robot = None):
-        robot.setNormalizedSideIntakeVelocity(self.__velocity)
+        robot.setSideIntakeNormalizedVelocity(self.__velocity)

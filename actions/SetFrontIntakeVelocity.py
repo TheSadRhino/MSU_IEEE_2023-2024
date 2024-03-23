@@ -8,4 +8,4 @@ class SetFrontIntakeVelocity(RunOnceAction):
         self.__velocity = velocity
 
     def runOnce(self, robot: Robot = None):
-        robot.setNormalizedFrontIntakeVelocity(self.__velocity)
+        robot.setFrontIntakeNormalizedVelocity(self.__velocity)

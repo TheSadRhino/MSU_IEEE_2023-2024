@@ -177,17 +177,11 @@ class Robot:
         self.__normalizedYVelocity = y
         self.__normalizedHeadingVelocity = heading
 
-    def setNormalizedFrontIntakeVelocity(self, velocity):
-        self.__intakeVelocities[0] = velocity
-
-    def setNormalizedSideIntakeVelocity(self, velocity):
-        self.__intakeVelocities[1] = velocity
-
     def setFrontIntakeNormalizedVelocity(self, speed):
-        self.__intakeVelocities[0] = speed
+        self.__normalizedIntakeVelocities[0] = speed
 
-    def setRearIntakeNormalizedVelocity(self, speed):
-        self.__intakeVelocities[1] = speed
+    def setSideIntakeNormalizedVelocity(self, speed):
+        self.__normalizedIntakeVelocities[1] = speed
 
     def setClimberMotorPosition(self, position):
         self.__desiredClimberPosition = position
@@ -373,6 +367,11 @@ class Robot:
             self.__normalizedWheelVelocities[i] /= maximum
             self.__wheelVelocities[i] = int(self.__normalizedWheelVelocities[i] * RobotConstants
                                             .driveMotorMaximumVelocityTicksPerSecond)
+
+        self.__intakeVelocities[0] = int(self.__normalizedIntakeVelocities[0] *
+                                         RobotConstants.intakeMotorMaximumVelocityTicksPerSecond)
+        self.__intakeVelocities[1] = int(self.__normalizedIntakeVelocities[1] *
+                                         RobotConstants.intakeMotorMaximumVelocityTicksPerSecond)
 
         for i in range(0, len(self.__lightSensorStandardDeviationCalculators)):
             self.__lightSensorStandardDeviations[i] = self.__lightSensorStandardDeviationCalculators[i]\

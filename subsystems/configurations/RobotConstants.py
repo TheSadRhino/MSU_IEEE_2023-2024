@@ -66,6 +66,9 @@ frontIntakeCurrentThresholdForJams = 1.5
 frontIntakeCurrentMovingAverageWindow = 5
 sideIntakeCurrentThresholdForJams = 1.5
 sideIntakeCurrentMovingAverageWindow = 5
+intakeMotorMaximumVelocityTicksPerSecond = 125000
+
+
 driveMotorMaximumVelocityTicksPerSecond = 2250
 
 climberMotorTuckedPosition = 0
