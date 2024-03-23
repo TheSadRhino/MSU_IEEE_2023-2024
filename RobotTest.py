@@ -1,5 +1,6 @@
 import multiprocessing
 import threading
+from concurrent.futures import ThreadPoolExecutor
 
 from actions.AtomicAction import AtomicAction
 from actions.ParallelAction import ParallelAction
@@ -10,12 +11,12 @@ from actions.WaitAction import WaitAction
 from subsystems.Robot import Robot
 
 robot = Robot()
-
+executor = ThreadPoolExecutor(max_workers=1)
+executor.submit(robot.updateRobot())
 #updateThread = threading.Thread(target=robot.updateRobot(), name="Robot Update Thread", daemon=True)
 #updateThread.start()
 
 print("post initialize")
-robot.updateRobot()
 robot.runAction(
     SeriesAction(
         [AtomicAction(
@@ -28,5 +29,4 @@ robot.runAction(
     )
 )
 
-robot.updateRobot()
 robot.runAction(PowerButtonLED(False))
