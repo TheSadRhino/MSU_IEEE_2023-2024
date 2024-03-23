@@ -31,14 +31,18 @@ robot.runAction(
              [DeployIntakesAction(),
               WaitAction(1)]
          ),
-         SetSideIntakeVelocity(0.4),
-         SetFrontIntakeVelocity(0.5),
+         ParallelAction(
+             [SetSideIntakeVelocity(0.4),
+              SetFrontIntakeVelocity(0.5)]
+         ),
          AtomicAction(
              [DriveWithGyroHeadingCorrection(0.05, -0.25, 0),
               WaitAction(1)]
          ),
-         SetSideIntakeVelocity(0),
-         SetFrontIntakeVelocity(0),
+         ParallelAction(
+             [SetSideIntakeVelocity(0),
+              SetFrontIntakeVelocity(0)]
+         )
          ]
     )
 )
