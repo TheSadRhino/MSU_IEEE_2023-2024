@@ -75,7 +75,7 @@ vl5.start_continuous()
 def detect_range(count=10):
     """take count=5 samples"""
     while count:
-        #print("Sensor {} Range: {}mm".format(1, vl5.range))
+        print("Sensor {} Range: {}mm".format(1, vl5.range))
         print("Sensor {} Range: {}mm".format(2, vl6.range))
 
         time.sleep(1.0)
@@ -86,7 +86,7 @@ def stop_continuous():
     unless if you want to save some energy
     """
     vl6.stop_range_continuous()
-    #vl5.stop_continuous()
+    vl5.stop_continuous()
 
 
 if __name__ == "__main__":
