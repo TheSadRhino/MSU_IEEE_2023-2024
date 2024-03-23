@@ -306,7 +306,7 @@ class Robot:
             subsystem.setupSystem()
 
     def _readInput(self):
-        self.__buttonPressed = self.__startButton.value
+        self.__buttonPressed = GPIO.input(RobotConstants.redButtonPins[1])
 
         self.__quaternionI, self.__quaternionJ, self.__quaternionK, self.__quaternionReal = self.__bno085.quaternion
 
@@ -411,7 +411,7 @@ class Robot:
                                                                  RobotConstants.climberMotorControllerAddress)
             self.__setClimberPosition = False
 
-        self.__redLED.value = self.__ledOn
+        GPIO.output(RobotConstants.redLEDPins[1], self.__ledOn)
 
         self.__lightSensor.led_current = self.__lightSensorLEDCurrent
         self.__lightSensor.led = self.__lightSensorLEDOn
