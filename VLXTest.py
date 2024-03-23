@@ -27,6 +27,7 @@ from digitalio import DigitalInOut
 from adafruit_vl53l0x import VL53L0X
 import RPi.GPIO as GPIO
 from adafruit_extended_bus import ExtendedI2C
+from sensors.VL6180X import VL6180X
 
 
 # declare the singleton variable for the default I2C bus
@@ -35,7 +36,6 @@ i2c = ExtendedI2C(3)
 
 GPIO.setmode(GPIO.BCM)
 
-time.sleep(5)
 # declare the digital output pins connected to the "SHDN" pin on each VL53L0X sensor
 xshut = [
     25,
@@ -56,22 +56,31 @@ vl53 = []
 # now change the addresses of the VL53L0X sensors
 for i, power_pin in enumerate(xshut):
     # turn on the VL53L0X to allow hardware check
-    GPIO.setup(power_pin, GPIO.OUT)
     GPIO.output(power_pin, True)
     # instantiate the VL53L0X sensor on the I2C bus & insert it into the "vl53" list
-    vl53.insert(i, VL53L0X(i2c))  # also performs VL53L0X hardware check
+    if power_pin == 25:
+        vl53.insert(i, VL53L0X(i2c))  # also performs VL53L0X hardware check
 
     # start continous mode
-    vl53[i].start_continuous()
+        vl53[i].start_continuous()
 
     # you will see the benefit of continous mode if you set the measurement timing
     # budget very high.
     # vl53[i].measurement_timing_budget = 2000000
 
     # no need to change the address of the last VL53L0X sensor
-    if i < len(xshut) - 1:
+        if i < len(xshut) - 1:
         # default address is 0x29. Change that to something else
-        vl53[i].set_address(i + 0x30)  # address assigned should NOT be already in use
+            vl53[i].set_address(i + 0x30)  # address assigned should NOT be already in use
+    else:
+        vl53.insert(i, VL6180X(i2c))
+
+        vl53[i].start_continuous()
+
+        if i < len(xshut) - 1:
+        # default address is 0x29. Change that to something else
+            vl53[i].set_address(i + 0x30)
+    time.sleep(0.25)
 # there is a helpful list of pre-designated I2C addresses for various I2C devices at
 # https://learn.adafruit.com/i2c-addresses/the-list
 # According to this list 0x30-0x34 are available, although the list may be incomplete.
