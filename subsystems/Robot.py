@@ -145,7 +145,8 @@ class Robot:
         self._startTOFSensorRanging()
 
         updateThread = multiprocessing.Process(target=self._updateRobot(), name="Robot Update Thread")
-        updateThread.run()
+        updateThread.start()
+        updateThread.join()
 
     def runAction(self, action: Action):
         print("Action call")
