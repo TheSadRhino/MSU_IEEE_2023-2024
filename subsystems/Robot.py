@@ -346,7 +346,7 @@ class Robot:
         self.__yaw, self.__pitch, self.__roll = MathUtilities.quaternionToEuler(self.__quaternionI,
                                                                                 self.__quaternionJ,
                                                                                 self.__quaternionK,
-                                                                                self.__quaternionReal)
+                                                                                self.__quaternionReal, True)
 
         self.__yawFinal = self.__yaw + self.__yawOffset
         self.__pitchFinal = self.__pitch + self.__pitchOffset
