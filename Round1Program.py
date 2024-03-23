@@ -24,7 +24,7 @@ robot.runAction(
     SeriesAction(
         [WaitForButtonPress(),
          ZeroGyroValues(),
-         SetDrivetrainVelocity(0, 0.1, 0),
+         SetDrivetrainVelocity(0, 0.25, 0),
          WaitForLeftSideDistanceLessThan(150),
          SetDrivetrainVelocity(0, 0, 0),
          ParallelAction(
@@ -34,7 +34,7 @@ robot.runAction(
          SetSideIntakeVelocity(0.2),
          SetFrontIntakeVelocity(0.2),
          AtomicAction(
-             [DriveWithGyroHeadingCorrection(0.05, -0.1, 0),
+             [DriveWithGyroHeadingCorrection(0.05, -0.25, 0),
               WaitAction(2)]
          ),
          SetSideIntakeVelocity(0),
