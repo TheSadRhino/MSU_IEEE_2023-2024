@@ -38,27 +38,26 @@ robot.runAction(
              [SetSideIntakeVelocity(0.4),
               SetFrontIntakeVelocity(0.5)]
          ),
-         SeriesAction(
-             [SetDrivetrainVelocity(0.05, -0.15, 0),
-              WaitAction(0.8),
-              ParallelAction(
-                  [SetDrivetrainVelocity(-0.05, 0.15, 0),
-                   RetractSideIntake(),
-                   WaitForLeftSideDistanceLessThan(150)]
-              ),
-              SetDrivetrainVelocity(-0.05, -0.05, 0),
-              ParallelAction(
-                  [SetSideIntakeVelocity(0),
-                   WaitAction(0.5)]
-              ),
-              SetDrivetrainVelocity(0.1, 0, 0),
-              WaitAction(0.5),
-              SetDrivetrainVelocity(-0.1, 0, 0),
-              WaitAction(0.5),
-              SetDrivetrainVelocity(0, -0.1, 0),
-              WaitAction(0.5),
-              SetDrivetrainVelocity(0.1, 0, 0)]
+         SetDrivetrainVelocity(0, -0.15, 0),
+         WaitAction(0.8),
+         ParallelAction(
+             [SetDrivetrainVelocity(-0.05, 0.15, 0),
+              RetractSideIntake(),
+              WaitForLeftSideDistanceLessThan(150)]
          ),
+         SetDrivetrainVelocity(-0.05, -0.05, 0),
+         ParallelAction(
+             [SetSideIntakeVelocity(0),
+              WaitAction(0.5)]
+         ),
+         SetDrivetrainVelocity(0.1, 0, 0),
+         WaitAction(0.5),
+         SetDrivetrainVelocity(-0.1, 0, 0),
+         WaitAction(0.5),
+         SetDrivetrainVelocity(0, -0.1, 0),
+         WaitAction(0.5),
+         SetDrivetrainVelocity(0.1, 0, 0),
+
          ParallelAction(
              [WaitAction(3),
               RetractFrontIntake(),
