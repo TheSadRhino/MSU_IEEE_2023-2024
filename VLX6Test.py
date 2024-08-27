@@ -36,8 +36,8 @@ if __name__ == "__main__":
     tca = adafruit_tca9548a.TCA9548A(i2c)
 
     # For each sensor, create it using the TCA9548A channel instead of the I2C object
-    tsl1 = VL6180X(tca.channels[0])
-    tsl2 = VL6180X(tca.channels[1])
+    tsl1 = VL6180X(tca[0])
+    tsl2 = VL6180X(tca[1])
 
     tsl1.start_continuous(10)
     tsl2.start_continuous(10)
