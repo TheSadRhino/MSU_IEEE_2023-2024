@@ -39,9 +39,6 @@ if __name__ == "__main__":
     tsl1 = VL6180X(tca[0])
     tsl2 = VL6180X(tca[1])
 
-    tsl1.start_continuous(10)
-    tsl2.start_continuous(10)
-
     # After initial setup, can just use sensors as normal.
     while True:
         print(time.time_ns(), tsl1.range, tsl2.range)
