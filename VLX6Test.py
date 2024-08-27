@@ -33,10 +33,10 @@ if __name__ == "__main__":
     # i2c = board.STEMMA_I2C()  # For using the built-in STEMMA QT connector on a microcontroller
 
     # Create the TCA9548A object and give it the I2C bus
-    tca = adafruit_tca9548a.TCA9548A(i2c)
+    #tca = adafruit_tca9548a.TCA9548A(i2c)
 
     # For each sensor, create it using the TCA9548A channel instead of the I2C object
-    tsl1 = VL6180X(tca[1])
+    tsl1 = VL6180X(i2c)
 
     tsl1.start_continuous()
 
